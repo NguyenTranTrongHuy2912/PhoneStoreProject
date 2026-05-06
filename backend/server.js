@@ -4,6 +4,9 @@ const cors = require('cors');
 const connectDB = require('./config/db.js');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+
+
 const app = express();
 
 // 1. Kết nối Database (Sẽ dùng MONGO_URI có chứa PhoneStoreDB từ .env hoặc Render)
@@ -26,6 +29,7 @@ app.get('/', (req, res) => {
 // 4. Routes chính
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // 5. Cấu hình Port linh hoạt cho Render
 const PORT = process.env.PORT || 5000;
