@@ -6,15 +6,30 @@ const productRoutes = require('./routes/productRoutes');
 
 const app = express();
 
-// Kết nối Database
+// 1. Kết nối Database (Sẽ dùng MONGO_URI có chứa PhoneStoreDB từ .env hoặc Render)
 connectDB();
 
-// Middleware
-app.use(cors());
-app.use(express.json()); // Để server hiểu được dữ liệu JSON từ request
+// 2. Middleware
+// Cho phép URL của Vercel truy cập vào (Thay URL dưới bằng link Vercel của bạn)
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production' 
+        ? 'https://ten-du-an-cua-ban.vercel.app' 
+        : '*'
+}));
+app.use(express.json()); 
 
-// Routes (Khai báo sau khi bạn tạo file trong thư mục routes)
+// 3. Health Check Route (Dùng để test nhanh xem server live chưa)
+app.get('/', (req, res) => {
+    res.send('API PhoneStoreProject đang chạy mượt mà...');
+});
+
+// 4. Routes chính
 app.use('/api/products', productRoutes);
 
+// 5. Cấu hình Port linh hoạt cho Render
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
+    console.log(`Mode: ${process.env.NODE_ENV || 'development'}`);
+});
