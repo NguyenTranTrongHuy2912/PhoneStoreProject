@@ -6,7 +6,7 @@ const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const orderRoutes = require('./routes/orderRoutes');
-
+const reviewRoutes = require('./routes/reviewRoutes');
 
 const app = express();
 
@@ -14,10 +14,10 @@ const app = express();
 connectDB();
 
 // 2. Middleware
-// Cho phép URL của Vercel truy cập vào (Thay URL dưới bằng link Vercel của bạn)
+// Cho phép URL của Vercel truy cập vào API khi ở production, còn ở development thì cho phép tất cả (để test dễ dàng)
 app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-        ? 'https://ten-du-an-cua-ban.vercel.app'
+        ? 'https://phone-store-project-jqkl.vercel.app/'
         : '*'
 }));
 app.use(express.json());
@@ -32,6 +32,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // 5. Cấu hình Port linh hoạt cho Render
 const PORT = process.env.PORT || 5000;
