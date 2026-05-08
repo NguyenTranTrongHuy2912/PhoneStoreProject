@@ -3,15 +3,18 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
-
+import Navbar from './components/common/Navbar'
+import Footer from './components/common/Footer'
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
+      <Navbar />
       <div>
-        <h1>Chào em nha, em ăn cơm chưa?</h1>
+        Nội dunng chính nằm ở đây nè!!!
       </div>
+      <Footer />
     </>
   )
 }
