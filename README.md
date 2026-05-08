@@ -85,3 +85,14 @@ Hệ thống sẽ tự động build Image và khởi chạy tất cả dịch v
 ---
 
 >  Chúc Thầy có trải nghiệm tốt khi chấm điểm dự án của nhóm!
+
+```bash
+# 1. Dừng và xóa các volume cũ (để xóa node_modules cũ đang bị kẹt trong Docker)
+docker-compose down -v
+
+# 2. Build lại từ đầu, ép Docker không dùng lại các tầng (layer) cũ
+docker-compose build --no-cache frontend
+
+# 3. Khởi động lại hệ thống
+docker-compose up
+```
