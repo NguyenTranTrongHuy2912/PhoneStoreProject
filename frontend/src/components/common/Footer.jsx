@@ -49,7 +49,8 @@ function Footer() {
         {/* Cột 1: Giới thiệu */}
         <div className="space-y-6">
           <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-blue-600">
-            <span>📱</span> <span>PhoneStore</span>
+            <img src="/favicon.svg" alt="Logo" className="w-8 h-8" />
+            <span>PhoneStore</span>
           </Link>
           <p className="text-gray-500 text-sm leading-relaxed">
             PhoneStore tự hào là đơn vị bán lẻ thiết bị công nghệ hàng đầu, mang đến trải nghiệm mua sắm thông minh và an tâm nhất cho người tiêu dùng Việt Nam.

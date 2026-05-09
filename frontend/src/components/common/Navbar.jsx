@@ -21,7 +21,8 @@ function Navbar() {
         
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-blue-600 shrink-0">
-          <span>📱</span> <span>PhoneStore</span>
+          <img src="/favicon.svg" alt="Logo" className="w-8 h-8" />
+          <span>PhoneStore</span>
         </Link>
 
         {/* Thanh Tìm kiếm AI */}
