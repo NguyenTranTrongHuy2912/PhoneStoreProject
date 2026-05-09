@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const { generateToken } = require('../middleware/auth');
 
 // @desc    Đăng ký người dùng mới
 // @route   POST /api/users/register
@@ -25,9 +26,13 @@ exports.registerUser = async (req, res) => {
             phone
         });
 
+        // 4. Tạo JWT Token
+        const token = generateToken(user._id, user.role);
+
         res.status(201).json({
             success: true,
             message: 'Đăng ký thành công',
+            token,
             data: {
                 _id: user._id,
                 fullname: user.fullname,
@@ -58,9 +63,13 @@ exports.loginUser = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Email hoặc mật khẩu không đúng' });
         }
 
+        // 3. Tạo JWT Token
+        const token = generateToken(user._id, user.role);
+
         res.status(200).json({
             success: true,
             message: 'Đăng nhập thành công',
+            token,
             data: {
                 _id: user._id,
                 fullname: user.fullname,

@@ -32,7 +32,10 @@ exports.createOrder = async (req, res) => {
 // @route   GET /api/orders/user/:userId
 exports.getUserOrders = async (req, res) => {
     try {
-        const orders = await Order.find({ userId: req.params.userId }).sort({ createdAt: -1 });
+        const orders = await Order.find({ userId: req.params.userId })
+            .populate('userId', 'fullname email phone')
+            .sort({ createdAt: -1 });
+        
         res.status(200).json({
             success: true,
             count: orders.length,
@@ -49,7 +52,7 @@ exports.getOrderById = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id)
             .populate('userId', 'fullname email phone') // Lấy thông tin khách hàng
-            .populate('items.productId', 'name images'); // Lấy thêm ảnh sản phẩm
+            .populate('items.productId', 'name images brand'); // Lấy thêm ảnh sản phẩm
 
         if (!order) {
             return res.status(404).json({ success: false, message: "Không tìm thấy đơn hàng" });
@@ -70,7 +73,8 @@ exports.updateOrderStatus = async (req, res) => {
             req.params.id,
             { status },
             { new: true, runValidators: true }
-        );
+        ).populate('userId', 'fullname email phone')
+         .populate('items.productId', 'name images brand');
 
         res.status(200).json({ success: true, data: order });
     } catch (error) {

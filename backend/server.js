@@ -7,6 +7,7 @@ const userRoutes = require('./routes/userRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
@@ -34,7 +35,13 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);
 
-// 5. Cấu hình Port linh hoạt cho Render
+// 5. 404 Handler (phải đặt trước error handler)
+app.use(notFoundHandler);
+
+// 6. Error Handler Middleware (phải đặt cuối cùng)
+app.use(errorHandler);
+
+// 7. Cấu hình Port linh hoạt cho Render
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
