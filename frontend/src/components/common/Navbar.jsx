@@ -1,8 +1,9 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { HiOutlineSearch, HiOutlineHeart, HiOutlineShoppingCart, HiOutlineSparkles } from 'react-icons/hi';
 
 function Navbar() {
+  const navigate = useNavigate();
   const navItems = [
     { name: 'Trang chủ', path: '/' },
     { name: 'Mobiles', path: '/mobiles' },
@@ -17,8 +18,8 @@ function Navbar() {
   return (
     <nav className="w-full border-b border-gray-200 bg-white sticky top-0 z-50">
       {/* Tầng 1: Main Header */}
-      <div className="max-w-[1440px] mx-auto px-10 py-4 flex items-center justify-between"> 
-        
+      <div className="max-w-[1440px] mx-auto px-10 py-4 flex items-center justify-between">
+
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-blue-600 shrink-0">
           <img src="/favicon.svg" alt="Logo" className="w-8 h-8" />
@@ -53,7 +54,10 @@ function Navbar() {
           </div>
           <div className="h-6 w-[1px] bg-gray-200 hidden sm:block"></div>
           <div className="flex items-center gap-4">
-            <button className="text-blue-500 text-sm font-semibold px-5 py-2.5 rounded-full border border-blue-500 hover:bg-blue-50 transition-colors">
+            <button
+              onClick={() => navigate('/login')}
+              className="text-blue-500 text-sm font-semibold px-5 py-2.5 rounded-full border border-blue-500 hover:bg-blue-50 transition-colors active:scale-95"
+            >
               Đăng nhập
             </button>
             <button className="bg-blue-500 text-white text-sm font-semibold px-7 py-2.5 rounded-full hover:bg-blue-600 shadow-md transition-all active:scale-95">
@@ -73,8 +77,8 @@ function Navbar() {
                 to={item.path}
                 className={({ isActive }) => `
                   text-base font-bold py-5 transition-all relative flex items-center
-                  ${isActive 
-                    ? 'text-blue-600 after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-600' 
+                  ${isActive
+                    ? 'text-blue-600 after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-600'
                     : 'text-gray-500 hover:text-blue-500'}
                 `}
               >
