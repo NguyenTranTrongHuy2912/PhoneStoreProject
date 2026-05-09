@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEye, HiOutlineEyeOff, HiOutlineQuestionMarkCircle } from 'react-icons/hi';
 import { FcGoogle } from 'react-icons/fc';
-import { FaPhoneAlt } from 'react-icons/fa';
+import { FaApple, FaPhoneAlt } from 'react-icons/fa';
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -94,7 +94,7 @@ function LoginPage() {
             <FcGoogle size={20} /> Google
           </button>
           <button className="flex items-center justify-center gap-3 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-semibold text-gray-700">
-            <FaPhoneAlt size={20} className="text-black" /> Số điện thoại
+            <FaApple size={20} className="text-black" /> Apple
           </button>
         </div>
 
