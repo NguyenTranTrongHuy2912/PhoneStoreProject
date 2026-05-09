@@ -60,7 +60,10 @@ function Navbar() {
             >
               Đăng nhập
             </button>
-            <button className="bg-blue-500 text-white text-sm font-semibold px-7 py-2.5 rounded-full hover:bg-blue-600 shadow-md transition-all active:scale-95">
+            <button
+              onClick={() => navigate('/register')}
+              className="bg-blue-500 text-white text-sm font-semibold px-7 py-2.5 rounded-full hover:bg-blue-600 shadow-md transition-all active:scale-95"
+            >
               Đăng ký
             </button>
           </div>
