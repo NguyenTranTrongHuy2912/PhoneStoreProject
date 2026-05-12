@@ -110,6 +110,37 @@ exports.validateLogin = (req, res, next) => {
 };
 
 /**
+ * Validate Profile Update
+ * Kiểm tra: fullname, phone (optional)
+ */
+exports.validateProfile = (req, res, next) => {
+    try {
+        const { fullname, phone } = req.body;
+
+        if (fullname !== undefined && fullname.trim().length < 3) {
+            return res.status(400).json({
+                success: false,
+                message: 'Tên phải từ 3 ký tự trở lên'
+            });
+        }
+
+        if (phone !== undefined && !isValidPhone(phone)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Số điện thoại phải là 10 chữ số'
+            });
+        }
+
+        next();
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+/**
  * Validate Product (Create/Update)
  * Kiểm tra: name, brand, price
  */

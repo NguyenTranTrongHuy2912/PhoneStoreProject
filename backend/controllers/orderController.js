@@ -81,3 +81,22 @@ exports.updateOrderStatus = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+
+// @desc    Lấy danh sách tất cả đơn hàng (Admin)
+// @route   GET /api/orders
+exports.getAllOrders = async (req, res) => {
+    try {
+        const orders = await Order.find()
+            .populate('userId', 'fullname email phone')
+            .populate('items.productId', 'name images brand')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            count: orders.length,
+            data: orders
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};

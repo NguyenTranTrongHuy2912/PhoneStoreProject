@@ -3,7 +3,9 @@ const router = express.Router();
 const { 
     getCategories, 
     createCategory, 
-    getCategoryById 
+    getCategoryById,
+    updateCategory,
+    deleteCategory
 } = require('../controllers/categoryController');
 
 // Import middleware
@@ -20,5 +22,11 @@ router.route('/')
 // URL: GET http://localhost:5000/api/categories/:id
 // Public
 router.get('/:id', getCategoryById);
+
+// URL: PUT & DELETE http://localhost:5000/api/categories/:id
+// Admin Only
+router.route('/:id')
+    .put(protect, adminCheck, updateCategory)
+    .delete(protect, adminCheck, deleteCategory);
 
 module.exports = router;

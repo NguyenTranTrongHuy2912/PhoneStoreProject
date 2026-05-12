@@ -1,55 +1,92 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEye, HiOutlineEyeOff, HiOutlineQuestionMarkCircle } from 'react-icons/hi';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi';
 import { FcGoogle } from 'react-icons/fc';
 import { FaPhoneAlt } from 'react-icons/fa';
+import { useAuth } from '@/hooks/useAuth';
+import { loginSchema } from '@/lib/zod-schemas';
 
 function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  const onSubmit = async (data) => {
+    try {
+      setIsLoading(true);
+      await login(data.email, data.password);
+      navigate('/');
+    } catch (error) {
+      console.error('Login error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12">
       <div className="w-full max-w-md space-y-8">
         {/* Tiêu đề */}
         <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold text-gray-900 flex items-center justify-center gap-2">
-            Chào mừng bạn!
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-900">Chào mừng bạn!</h2>
           <p className="text-gray-500 text-sm font-medium">
             Đăng nhập để tiếp tục hành trình mua sắm tuyệt vời.
           </p>
         </div>
 
         {/* Form Đăng nhập */}
-        <form className="mt-8 space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5">
           {/* Email */}
           <div className="space-y-1.5">
-            <div className="flex justify-between items-center">
-              <label className="text-sm font-semibold text-gray-700">Email</label>
-              <HiOutlineQuestionMarkCircle className="text-gray-400 cursor-help" />
-            </div>
+            <label className="text-sm font-semibold text-gray-700">Email</label>
             <div className="relative group">
               <HiOutlineMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-blue-500 transition-colors" />
               <input
+                {...register('email')}
                 type="email"
                 placeholder="example@email.com"
-                className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-gray-300"
+                className={`w-full pl-12 pr-4 py-3 bg-white border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all placeholder:text-gray-300 ${
+                  errors.email ? 'border-red-500' : 'border-gray-200 focus:border-blue-500'
+                }`}
               />
             </div>
+            {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
           </div>
 
           {/* Mật khẩu */}
           <div className="space-y-1.5">
-            <div className="flex justify-between items-center">
-              <label className="text-sm font-semibold text-gray-700">Mật khẩu</label>
-              <HiOutlineQuestionMarkCircle className="text-gray-400 cursor-help" />
-            </div>
+            <label className="text-sm font-semibold text-gray-700">Mật khẩu</label>
             <div className="relative group">
               <HiOutlineLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-blue-500 transition-colors" />
               <input
-                type={showPassword ? "text" : "password"}
+                {...register('password')}
+                type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
-                className="w-full pl-12 pr-12 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-gray-300"
+                className={`w-full pl-12 pr-12 py-3 bg-white border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all placeholder:text-gray-300 ${
+                  errors.password ? 'border-red-500' : 'border-gray-200 focus:border-blue-500'
+                }`}
               />
               <button
                 type="button"
@@ -59,22 +96,23 @@ function LoginPage() {
                 {showPassword ? <HiOutlineEyeOff size={20} /> : <HiOutlineEye size={20} />}
               </button>
             </div>
+            {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
           </div>
 
-          {/* Ghi nhớ & Quên mật khẩu */}
-          <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2 cursor-pointer group">
-              <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-              <span className="text-sm text-gray-600 font-medium group-hover:text-gray-900 transition-colors">Ghi nhớ tôi</span>
-            </label>
-            <Link to="/forgot-password" size="sm" className="text-sm font-semibold text-blue-600 hover:text-blue-700">
+          {/* Quên mật khẩu */}
+          <div className="flex justify-end">
+            <Link to="#" className="text-sm font-semibold text-blue-600 hover:text-blue-700">
               Quên mật khẩu?
             </Link>
           </div>
 
           {/* Nút Đăng nhập */}
-          <button className="w-full bg-[#2d6289] hover:bg-[#244e6d] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-900/10 transition-all active:scale-[0.98]">
-            Đăng nhập
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-[#2d6289] hover:bg-[#244e6d] disabled:bg-gray-400 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-900/10 transition-all active:scale-[0.98]"
+          >
+            {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
           </button>
         </form>
 
@@ -90,10 +128,10 @@ function LoginPage() {
 
         {/* Social Login */}
         <div className="grid grid-cols-2 gap-4">
-          <button className="flex items-center justify-center gap-3 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-semibold text-gray-700">
+          <button type="button" className="flex items-center justify-center gap-3 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-semibold text-gray-700">
             <FcGoogle size={20} /> Google
           </button>
-          <button className="flex items-center justify-center gap-3 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-semibold text-gray-700">
+          <button type="button" className="flex items-center justify-center gap-3 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-semibold text-gray-700">
             <FaPhoneAlt size={20} className="text-black" /> Số điện thoại
           </button>
         </div>
@@ -108,7 +146,15 @@ function LoginPage() {
 
         {/* Điều khoản */}
         <p className="text-center text-[11px] text-gray-400 leading-relaxed px-4">
-          Bằng cách đăng nhập, bạn đồng ý với <Link to="/terms" className="underline hover:text-gray-600">Điều khoản dịch vụ</Link> và <Link to="/privacy" className="underline hover:text-gray-600">Chính sách bảo mật</Link> của chúng tôi.
+          Bằng cách đăng nhập, bạn đồng ý với{' '}
+          <Link to="#" className="underline hover:text-gray-600">
+            Điều khoản dịch vụ
+          </Link>{' '}
+          và{' '}
+          <Link to="#" className="underline hover:text-gray-600">
+            Chính sách bảo mật
+          </Link>{' '}
+          của chúng tôi.
         </p>
       </div>
     </div>
