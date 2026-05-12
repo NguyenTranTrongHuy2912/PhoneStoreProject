@@ -2,12 +2,16 @@ import { useEffect } from 'react'
 import './App.css'
 import Navbar from './components/common/Navbar'
 import Footer from './components/common/Footer'
-import { Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useCheckAuth } from '@/hooks/useAuth';
 
 // Pages
-import HomePage from './pages/HomePage';
+import HomePage from './pages/HomePage';   
 import LoginPage from './pages/LoginPage';
+import HomePage from './pages/HomePage';
+
+
+
 import RegisterPage from './pages/RegisterPage';
 import ProductListPage from './pages/ProductListPage';
 import ProductDetailPage from './pages/ProductDetailPage';
@@ -25,20 +29,23 @@ import AdminCategoryPage from './pages/AdminCategoryPage';
 // Routes
 import ProtectedRoute, { AdminRoute } from './components/auth/ProtectedRoute';
 
+
 function App() {
-  // Check auth state on app load
   useCheckAuth();
+  const [count, setCount] = useState(0)
 
   return (
     <div className="app-container flex flex-col min-h-screen">
-      <Navbar />
+      <Navbar />  
 
       <main className="flex-grow">
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          {/* Thêm các route khác ở đây */}
+          {/* <Route path="/register" element={<RegisterPage />} /> */}
+           <Route path="/register" element={<RegisterPage />} />
           <Route path="/products" element={<ProductListPage />} />
           <Route path="/products/:id" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
@@ -118,7 +125,14 @@ function App() {
               </AdminRoute>
             }
           />
+
+
         </Routes>
+
+        {/* Khu vực test hiển thị ProductCard */}
+        <div className="p-10 flex justify-center bg-gray-50">
+          <ProductCard product={mockProduct} />
+        </div>
       </main>
 
       <Footer />

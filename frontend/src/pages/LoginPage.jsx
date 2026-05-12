@@ -4,9 +4,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HiOutlineMail, HiOutlineLockClosed, HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi';
 import { FcGoogle } from 'react-icons/fc';
+<<<<<<< HEAD
 import { FaPhoneAlt } from 'react-icons/fa';
 import { useAuth } from '@/hooks/useAuth';
 import { loginSchema } from '@/lib/zod-schemas';
+=======
+import { FaApple, FaPhoneAlt } from 'react-icons/fa';
+>>>>>>> 56e53788fee1d870ad1f1f8b8c1fd6a95d478060
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -131,8 +135,13 @@ function LoginPage() {
           <button type="button" className="flex items-center justify-center gap-3 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-semibold text-gray-700">
             <FcGoogle size={20} /> Google
           </button>
+<<<<<<< HEAD
           <button type="button" className="flex items-center justify-center gap-3 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-semibold text-gray-700">
             <FaPhoneAlt size={20} className="text-black" /> Số điện thoại
+=======
+          <button className="flex items-center justify-center gap-3 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-semibold text-gray-700">
+            <FaApple size={20} className="text-black" /> Apple
+>>>>>>> 56e53788fee1d870ad1f1f8b8c1fd6a95d478060
           </button>
         </div>
 

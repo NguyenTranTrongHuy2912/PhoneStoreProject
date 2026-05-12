@@ -106,6 +106,7 @@ function Navbar() {
           </div>
           <div className="h-6 w-[1px] bg-gray-200 hidden sm:block"></div>
           <div className="flex items-center gap-4">
+<<<<<<< HEAD
             {user ? (
               // Authenticated user menu
               <div className="relative">
@@ -179,6 +180,20 @@ function Navbar() {
                 </button>
               </>
             )}
+=======
+            <button
+              onClick={() => navigate('/login')}
+              className="text-blue-500 text-sm font-semibold px-5 py-2.5 rounded-full border border-blue-500 hover:bg-blue-50 transition-colors active:scale-95"
+            >
+              Đăng nhập
+            </button>
+            <button
+              onClick={() => navigate('/register')}
+              className="bg-blue-500 text-white text-sm font-semibold px-7 py-2.5 rounded-full hover:bg-blue-600 shadow-md transition-all active:scale-95"
+            >
+              Đăng ký
+            </button>
+>>>>>>> 56e53788fee1d870ad1f1f8b8c1fd6a95d478060
           </div>
         </div>
       </div>
