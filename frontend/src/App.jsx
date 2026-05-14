@@ -13,6 +13,7 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
+import VnpayReturnPage from './pages/VnpayReturnPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
 import ProfilePage from './pages/ProfilePage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -93,6 +94,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <OrderSuccessPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout/vnpay-return"
+            element={
+              <ProtectedRoute>
+                <VnpayReturnPage />
               </ProtectedRoute>
             }
           />

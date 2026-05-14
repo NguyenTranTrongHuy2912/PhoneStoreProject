@@ -56,7 +56,7 @@ export const addressSchema = z.object({
 
 export const checkoutSchema = z.object({
   shippingAddress: addressSchema,
-  paymentMethod: z.enum(['credit_card', 'debit_card', 'paypal', 'bank_transfer']),
+  paymentMethod: z.enum(['credit_card', 'debit_card', 'paypal', 'bank_transfer', 'vnpay']),
   billingAddressSameAsShipping: z.boolean(),
 });
 

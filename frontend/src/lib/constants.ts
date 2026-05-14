@@ -84,6 +84,7 @@ export const PAYMENT_METHODS = {
   DEBIT_CARD: 'debit_card',
   PAYPAL: 'paypal',
   BANK_TRANSFER: 'bank_transfer',
+  VNPAY: 'vnpay',
 } as const;
 
 export const PAYMENT_METHOD_LABELS = {
@@ -91,6 +92,7 @@ export const PAYMENT_METHOD_LABELS = {
   [PAYMENT_METHODS.DEBIT_CARD]: 'Thẻ ghi nợ',
   [PAYMENT_METHODS.PAYPAL]: 'PayPal',
   [PAYMENT_METHODS.BANK_TRANSFER]: 'Chuyển khoản ngân hàng',
+  [PAYMENT_METHODS.VNPAY]: '💳 Thanh toán VNPay',
 } as const;
 
 // Routes

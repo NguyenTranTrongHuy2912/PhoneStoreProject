@@ -46,6 +46,11 @@ const orderSchema = new mongoose.Schema({
     type: String,
     default: 'Processing',
     enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled']
+  },
+  // Mã giao dịch VNPay (chỉ có khi thanh toán qua VNPay)
+  vnpayTransactionId: {
+    type: String,
+    default: null
   }
 }, { 
   timestamps: true // Tự động tạo createdAt và updatedAt
