@@ -12,6 +12,17 @@ function Navbar() {
   const { logout } = useAuth();
   const { items: cartItems } = useCartStore();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = () => {
+    const q = searchQuery.trim();
+    if (!q) return;
+    navigate(`/products?search=${encodeURIComponent(q)}`);
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === 'Enter') handleSearch();
+  };
 
   const navItems = [
     { name: 'Trang chủ', path: '/' },
@@ -71,17 +82,23 @@ function Navbar() {
           <span>PhoneStore</span>
         </Link>
 
-        {/* Thanh Tìm kiếm AI */}
+        {/* Thanh Tìm kiếm */}
         <div className="flex-1 max-w-2xl mx-12 relative hidden lg:block">
           <div className="relative flex items-center">
             <HiOutlineSearch className="absolute left-4 text-gray-400 text-xl" />
             <input
               type="text"
-              placeholder="Tìm kiếm bằng AI: 'Điện thoại chụp ảnh đẹp dưới 15 triệu'..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              placeholder="Tìm kiếm tên điện thoại, thương hiệu..."
               className="w-full pl-12 pr-28 py-2.5 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all text-sm"
             />
-            <button className="absolute right-1.5 bg-blue-500 hover:bg-blue-600 text-white px-5 py-1.5 rounded-full text-sm font-medium transition-colors">
-              Search
+            <button
+              onClick={handleSearch}
+              className="absolute right-1.5 bg-blue-500 hover:bg-blue-600 text-white px-5 py-1.5 rounded-full text-sm font-medium transition-colors"
+            >
+              Tìm kiếm
             </button>
           </div>
         </div>

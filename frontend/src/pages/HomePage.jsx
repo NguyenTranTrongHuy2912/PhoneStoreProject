@@ -74,15 +74,15 @@ function HeroSection() {
         {/* Hero Visual */}
         <div className="hidden lg:flex items-center justify-center relative">
           <div className="absolute w-80 h-80 bg-blue-500/20 rounded-full blur-3xl" />
-          <div className="relative grid grid-cols-2 gap-4">
-            {['Apple', 'Samsung', 'Xiaomi', 'OPPO'].map((brand) => (
+          <div className="relative grid grid-cols-3 gap-4">
+            {['Apple', 'Samsung', 'Xiaomi'].map((brand) => (
               <Link
                 key={brand}
                 to={`/products?brand=${brand}`}
                 className="group bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 text-center hover:bg-white/20 transition-all hover:-translate-y-1"
               >
                 <div className="text-3xl mb-2">
-                  {brand === 'Apple' ? '🍎' : brand === 'Samsung' ? '📱' : brand === 'Xiaomi' ? '⚡' : '🔷'}
+                  {brand === 'Apple' ? '🍎' : brand === 'Samsung' ? '📱' : '⚡'}
                 </div>
                 <div className="text-white font-bold text-sm">{brand}</div>
               </Link>
@@ -128,9 +128,6 @@ function BrandsSection() {
     { name: 'Apple', emoji: '🍎', color: 'from-gray-800 to-gray-600' },
     { name: 'Samsung', emoji: '📱', color: 'from-blue-700 to-blue-500' },
     { name: 'Xiaomi', emoji: '⚡', color: 'from-orange-600 to-orange-400' },
-    { name: 'OPPO', emoji: '🔷', color: 'from-green-600 to-green-400' },
-    { name: 'Vivo', emoji: '📲', color: 'from-indigo-600 to-indigo-400' },
-    { name: 'Realme', emoji: '🎯', color: 'from-yellow-600 to-yellow-400' },
   ];
 
   return (
@@ -140,7 +137,7 @@ function BrandsSection() {
           <h2 className="text-2xl font-extrabold text-gray-900">Thương Hiệu Hàng Đầu</h2>
           <p className="text-gray-500 text-sm">Sản phẩm chính hãng 100% từ các thương hiệu uy tín</p>
         </div>
-        <div className="grid grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto">
           {brands.map((brand) => (
             <Link
               key={brand.name}
