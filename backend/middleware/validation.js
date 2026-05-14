@@ -142,16 +142,18 @@ exports.validateProfile = (req, res, next) => {
 
 /**
  * Validate Product (Create/Update)
- * Kiểm tra: name, brand, price
+ * Kiểm tra: name, brand (bắt buộc); variants (optional nhưng nếu có phải hợp lệ)
+ * Lưu ý: Product model KHÔNG có field 'price' trực tiếp, giá nằm trong variants[].price
  */
 exports.validateProduct = (req, res, next) => {
     try {
-        const { name, brand, price } = req.body;
+        const { name, brand, variants } = req.body;
 
-        if (!name || !brand || price === undefined) {
+        // Kiểm tra các field bắt buộc
+        if (!name || !brand) {
             return res.status(400).json({
                 success: false,
-                message: 'Vui lòng cung cấp: name, brand, price'
+                message: 'Vui lòng cung cấp: name và brand'
             });
         }
 
@@ -162,11 +164,37 @@ exports.validateProduct = (req, res, next) => {
             });
         }
 
-        if (typeof price !== 'number' || price <= 0) {
+        if (brand.trim().length < 2) {
             return res.status(400).json({
                 success: false,
-                message: 'Giá phải là số dương'
+                message: 'Tên thương hiệu phải từ 2 ký tự trở lên'
             });
+        }
+
+        // Nếu có variants thì validate từng variant
+        if (variants !== undefined) {
+            if (!Array.isArray(variants) || variants.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'variants phải là một mảng và không được rỗng'
+                });
+            }
+
+            for (let i = 0; i < variants.length; i++) {
+                const variant = variants[i];
+                if (typeof variant.price !== 'number' || variant.price <= 0) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Variant [${i}]: price phải là số dương`
+                    });
+                }
+                if (typeof variant.stock !== 'number' || variant.stock < 0) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Variant [${i}]: stock phải là số không âm`
+                    });
+                }
+            }
         }
 
         next();
@@ -180,16 +208,17 @@ exports.validateProduct = (req, res, next) => {
 
 /**
  * Validate Review
- * Kiểm tra: productId, userId, rating, comment
+ * Kiểm tra: productId, rating, comment
+ * Lưu ý: userId lấy từ req.user (JWT token), không cần trong body
  */
 exports.validateReview = (req, res, next) => {
     try {
-        const { productId, userId, rating, comment } = req.body;
+        const { productId, rating, comment } = req.body;
 
-        if (!productId || !userId || !rating || !comment) {
+        if (!productId || !rating || !comment) {
             return res.status(400).json({
                 success: false,
-                message: 'Vui lòng cung cấp tất cả: productId, userId, rating, comment'
+                message: 'Vui lòng cung cấp: productId, rating, comment'
             });
         }
 
@@ -216,18 +245,20 @@ exports.validateReview = (req, res, next) => {
     }
 };
 
+
 /**
  * Validate Order
- * Kiểm tra: userId, items, totalAmount, shippingAddress, paymentMethod
+ * Kiểm tra: items, totalAmount, shippingAddress, paymentMethod
+ * Lưu ý: userId lấy từ req.user (JWT token), KHÔNG cần trong body để tránh giả mạo
  */
 exports.validateOrder = (req, res, next) => {
     try {
-        const { userId, items, totalAmount, shippingAddress, paymentMethod } = req.body;
+        const { items, totalAmount, shippingAddress, paymentMethod } = req.body;
 
-        if (!userId || !items || !totalAmount || !shippingAddress || !paymentMethod) {
+        if (!items || !totalAmount || !shippingAddress || !paymentMethod) {
             return res.status(400).json({
                 success: false,
-                message: 'Vui lòng cung cấp tất cả: userId, items, totalAmount, shippingAddress, paymentMethod'
+                message: 'Vui lòng cung cấp: items, totalAmount, shippingAddress, paymentMethod'
             });
         }
 
@@ -243,6 +274,29 @@ exports.validateOrder = (req, res, next) => {
                 success: false,
                 message: 'Tổng tiền phải là số dương'
             });
+        }
+
+        // Validate từng item trong giỏ hàng
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (!item.productId) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Item [${i}]: productId là bắt buộc`
+                });
+            }
+            if (typeof item.quantity !== 'number' || item.quantity < 1) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Item [${i}]: quantity phải >= 1`
+                });
+            }
+            if (typeof item.price !== 'number' || item.price <= 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Item [${i}]: price phải là số dương`
+                });
+            }
         }
 
         next();

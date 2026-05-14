@@ -4,7 +4,9 @@ const Order = require('../models/Order');
 // @route   POST /api/orders
 exports.createOrder = async (req, res) => {
     try {
-        const { userId, items, totalAmount, shippingAddress, paymentMethod } = req.body;
+        // Lấy userId từ JWT token (req.user) thay vì body để đảm bảo bảo mật
+        const userId = req.user._id;
+        const { items, totalAmount, shippingAddress, paymentMethod } = req.body;
 
         if (!items || items.length === 0) {
             return res.status(400).json({ success: false, message: "Giỏ hàng rỗng" });

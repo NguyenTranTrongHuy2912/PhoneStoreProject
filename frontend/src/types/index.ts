@@ -147,6 +147,7 @@ export interface CartItem {
   product?: Product;
   quantity: number;
   price: number;
+  sku?: string; // Để phân biệt cùng sản phẩm nhưng khác variant (màu/dung lượng)
 }
 
 export interface Cart {

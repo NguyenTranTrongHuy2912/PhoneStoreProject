@@ -1,10 +1,9 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 
 /**
- * ✅ ProtectedRoute Component
- * Chỉ cho phép users đã authenticated truy cập
+ * ProtectedRoute — chỉ cho phép users đã đăng nhập
  */
 function ProtectedRoute({ children }) {
   const { user, token } = useAuthStore();
@@ -20,8 +19,8 @@ function ProtectedRoute({ children }) {
 export default ProtectedRoute;
 
 /**
- * ✅ AdminRoute Component
- * Chỉ cho phép admins truy cập
+ * AdminRoute — chỉ cho phép admin truy cập
+ * Hỗ trợ cả children (single page) và Outlet (nested routes)
  */
 export function AdminRoute({ children }) {
   const { user, token } = useAuthStore();
@@ -36,5 +35,6 @@ export function AdminRoute({ children }) {
     return <Navigate to="/" replace />;
   }
 
-  return children;
+  // Nếu không có children thì render Outlet (nested route pattern)
+  return children ?? <Outlet />;
 }

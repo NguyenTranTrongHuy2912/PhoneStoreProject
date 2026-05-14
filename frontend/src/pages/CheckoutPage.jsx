@@ -9,7 +9,9 @@ import { orderService } from '@/services/orderService';
 import { useMutate } from '@/hooks/useFetch';
 
 const formatAddress = (address) => {
-  return `${address.street}, ${address.city}, ${address.state}, ${address.country}`;
+  const parts = [address.street, address.city, address.state, address.country]
+    .filter(Boolean); // Lọc bỏ các giá trị null/undefined/rỗng
+  return parts.join(', ') || 'Địa chỉ không hợp lệ';
 };
 
 function CheckoutPage() {
@@ -26,28 +28,28 @@ function CheckoutPage() {
       navigate(`/order-success/${order._id}`);
     },
     () => {
-      addNotification({ type: 'error', message: 'Khong the tao don hang' });
+      addNotification({ type: 'error', message: 'Không thể tạo đơn hàng. Vui lòng thử lại.' });
     }
   );
 
   const handleSubmit = (data) => {
     if (!user) {
-      addNotification({ type: 'warning', message: 'Vui long dang nhap de thanh toan' });
+      addNotification({ type: 'warning', message: 'Vui lòng đăng nhập để thanh toán' });
       return;
     }
     if (items.length === 0) {
-      addNotification({ type: 'warning', message: 'Gio hang dang trong' });
+      addNotification({ type: 'warning', message: 'Giỏ hàng đang trống' });
       return;
     }
 
+    // Lưu ý: userId KHÔNG cần gửi trong body vì backend lấy từ JWT token
     const payload = {
-      userId: user._id,
       items: items.map((item) => ({
         productId: item.productId,
-        name: item.product?.name || 'San pham',
+        name: item.product?.name || 'Sản phẩm',
         quantity: item.quantity,
         price: item.price,
-        sku: item.product?.variants?.[0]?.sku || item.sku,
+        sku: item.sku || item.product?.variants?.[0]?.sku || '',
       })),
       totalAmount: getTotalPrice(),
       shippingAddress: formatAddress(data.shippingAddress),
@@ -56,6 +58,7 @@ function CheckoutPage() {
 
     createOrderMutation.mutate(payload);
   };
+
 
   if (items.length === 0) {
     return (

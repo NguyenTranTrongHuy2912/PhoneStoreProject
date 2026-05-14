@@ -15,13 +15,11 @@ function Navbar() {
 
   const navItems = [
     { name: 'Trang chủ', path: '/' },
-    { name: 'Mobiles', path: '/products?category=mobile', key: 'category-mobile' },
-    { name: 'Laptops', path: '/products?category=laptop', key: 'category-laptop' },
-    { name: 'Apple', path: '/products?brand=apple', key: 'brand-apple' },
-    { name: 'Samsung', path: '/products?brand=samsung', key: 'brand-samsung' },
-    { name: 'Xiaomi', path: '/products?brand=xiaomi', key: 'brand-xiaomi' },
-    { name: 'Accessories', path: '/products?category=accessories', key: 'category-accessories' },
-    { name: 'Deals', path: '/products?deals=true', key: 'deals' },
+    { name: 'Sản phẩm', path: '/products' },
+    { name: 'Apple', path: '/products?brand=Apple' },
+    { name: 'Samsung', path: '/products?brand=Samsung' },
+    { name: 'Xiaomi', path: '/products?brand=Xiaomi' },
+    { name: 'Accessories', path: '/products?category=accessories' },
   ];
 
   const handleLogout = () => {
@@ -39,7 +37,7 @@ function Navbar() {
 
     // Extract query params from item path
     const [path, queryString] = item.path.split('?');
-    
+
     if (location.pathname !== path) {
       return false;
     }
@@ -83,7 +81,7 @@ function Navbar() {
               className="w-full pl-12 pr-28 py-2.5 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all text-sm"
             />
             <button className="absolute right-1.5 bg-blue-500 hover:bg-blue-600 text-white px-5 py-1.5 rounded-full text-sm font-medium transition-colors">
-              AI Search
+              Search
             </button>
           </div>
         </div>
@@ -106,7 +104,6 @@ function Navbar() {
           </div>
           <div className="h-6 w-[1px] bg-gray-200 hidden sm:block"></div>
           <div className="flex items-center gap-4">
-<<<<<<< HEAD
             {user ? (
               // Authenticated user menu
               <div className="relative">
@@ -180,20 +177,6 @@ function Navbar() {
                 </button>
               </>
             )}
-=======
-            <button
-              onClick={() => navigate('/login')}
-              className="text-blue-500 text-sm font-semibold px-5 py-2.5 rounded-full border border-blue-500 hover:bg-blue-50 transition-colors active:scale-95"
-            >
-              Đăng nhập
-            </button>
-            <button
-              onClick={() => navigate('/register')}
-              className="bg-blue-500 text-white text-sm font-semibold px-7 py-2.5 rounded-full hover:bg-blue-600 shadow-md transition-all active:scale-95"
-            >
-              Đăng ký
-            </button>
->>>>>>> 56e53788fee1d870ad1f1f8b8c1fd6a95d478060
           </div>
         </div>
       </div>

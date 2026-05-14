@@ -30,7 +30,8 @@ export const useAuth = () => {
         message: 'Đăng nhập thành công',
       });
       
-      navigate('/');
+      // Redirect admin to dashboard, others to home
+      navigate(response.data.role === 'admin' ? '/admin/dashboard' : '/');
     } catch (error: any) {
       const message = error.response?.data?.message || 'Đăng nhập thất bại';
       setError(message);

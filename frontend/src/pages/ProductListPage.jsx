@@ -34,6 +34,7 @@ function ProductListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const brandParam = searchParams.get('brand') || '';
   const categoryParam = searchParams.get('category') || '';
+  const dealsParam = searchParams.get('deals') === 'true';
   const ratingParam = Number(searchParams.get('rating') || 0);
   const sortParam = searchParams.get('sort') || 'name-asc';
   const pageParam = Number(searchParams.get('page') || 1);
@@ -97,18 +98,41 @@ function ProductListPage() {
     return Array.from(unique).sort();
   }, [products]);
 
+  // Tiêu đề trang dựa trên filter đang active
+  const pageHeading = useMemo(() => {
+    if (brandParam) return `${brandParam}`;
+    if (categoryParam === 'accessories') return 'Phụ kiện';
+    if (categoryParam) return categoryParam;
+    if (dealsParam) return '🔥 Deals - Giá tốt hôm nay';
+    return 'Tất cả sản phẩm';
+  }, [brandParam, categoryParam, dealsParam]);
+
   const filteredProducts = useMemo(() => {
     return products
       .filter((product) => {
+        // Filter theo thương hiệu (case-insensitive)
         if (brandParam) {
           if (!product.brand || product.brand.toLowerCase() !== brandParam.toLowerCase()) {
             return false;
           }
         }
 
+        // Filter theo danh mục
         if (categoryParam) {
           const productCategory = getCategoryValue(product.category);
           if (!productCategory.includes(categoryParam.toLowerCase())) {
+            return false;
+          }
+        }
+
+        // Filter Deals: sản phẩm có nhiều hơn 1 variant HOẶC có từ khóa "deals"/"sale" trong tên/mô tả
+        // Khi admin thêm sản phẩm deals, đặt category slug = "deals" hoặc thêm tag "deals"
+        if (dealsParam) {
+          const catValue = getCategoryValue(product.category);
+          const isDealsCategory = catValue.includes('deal') || catValue.includes('sale') || catValue.includes('khuyen-mai');
+          const hasMultipleVariants = (product.variants?.length || 0) > 1;
+          const hasDiscountInName = product.name?.toLowerCase().includes('sale') || product.description?.toLowerCase().includes('khuyến mãi');
+          if (!isDealsCategory && !hasMultipleVariants && !hasDiscountInName) {
             return false;
           }
         }
@@ -169,11 +193,17 @@ function ProductListPage() {
   const handleAddToCart = (product) => {
     const price = getDisplayPrice(product);
     if (!price) {
-      addNotification({ type: 'warning', message: 'San pham chua co gia' });
+      addNotification({ type: 'warning', message: 'Sản phẩm chưa có giá' });
       return;
     }
-    addItem({ productId: product._id, product, quantity: 1, price });
-    addNotification({ type: 'success', message: 'Da them vao gio hang' });
+    addItem({
+      productId: product._id,
+      product,
+      quantity: 1,
+      price,
+      sku: product?.variants?.[0]?.sku,
+    });
+    addNotification({ type: 'success', message: 'Đã thêm vào giỏ hàng!' });
   };
 
   const updateParam = (key, value) => {
@@ -223,14 +253,14 @@ function ProductListPage() {
         <div className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex items-center gap-3 text-gray-800 font-bold text-lg">
             <HiOutlineAdjustments className="text-blue-500" />
-            Danh sach san pham
+            {pageHeading}
           </div>
           <div className="flex flex-1 max-w-xl items-center gap-3 bg-gray-50 border border-gray-200 rounded-full px-4 py-2">
             <HiOutlineSearch className="text-gray-400" />
             <input
               value={searchInput}
               onChange={(event) => setSearchInput(event.target.value)}
-              placeholder="Tim kiem theo ten san pham"
+              placeholder="Tìm kiếm theo tên sản phẩm"
               className="flex-1 bg-transparent focus:outline-none text-sm"
             />
           </div>
@@ -239,52 +269,57 @@ function ProductListPage() {
             onChange={(event) => updateParam('sort', event.target.value)}
             className="border border-gray-200 rounded-full px-4 py-2 text-sm font-semibold text-gray-600"
           >
-            <option value="name-asc">Ten A-Z</option>
-            <option value="name-desc">Ten Z-A</option>
-            <option value="price-asc">Gia tang dan</option>
-            <option value="price-desc">Gia giam dan</option>
-            <option value="rating-desc">Danh gia cao</option>
+            <option value="name-asc">Tên A-Z</option>
+            <option value="name-desc">Tên Z-A</option>
+            <option value="price-asc">Giá tăng dần</option>
+            <option value="price-desc">Giá giảm dần</option>
+            <option value="rating-desc">Đánh giá cao</option>
           </select>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
           <aside className="bg-white border border-gray-200 rounded-2xl p-6 space-y-6 h-fit">
-            <BrandFilter
-              brands={brands}
-              activeBrand={brandParam}
-              onChange={handleBrandChange}
-            />
+            {/* Thương hiệu & Danh mục: ẩn khi đang filter cố định từ navbar (Apple/Samsung/Accessories...) */}
+            {!brandParam && !categoryParam && (
+              <>
+                <BrandFilter
+                  brands={brands}
+                  activeBrand={brandParam}
+                  onChange={handleBrandChange}
+                />
 
-            <div className="space-y-3">
-              <h4 className="text-sm font-bold text-gray-900">Danh muc</h4>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleCategoryChange('')}
-                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
-                    !categoryParam
-                      ? 'bg-blue-500 text-white border-blue-500'
-                      : 'border-gray-200 text-gray-600 hover:border-blue-400 hover:text-blue-600'
-                  }`}
-                >
-                  Tat ca
-                </button>
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    type="button"
-                    onClick={() => handleCategoryChange(category)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
-                      categoryParam === category
-                        ? 'bg-blue-500 text-white border-blue-500'
-                        : 'border-gray-200 text-gray-600 hover:border-blue-400 hover:text-blue-600'
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-            </div>
+                <div className="space-y-3">
+                  <h4 className="text-sm font-bold text-gray-900">Danh mục</h4>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleCategoryChange('')}
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                        !categoryParam
+                          ? 'bg-blue-500 text-white border-blue-500'
+                          : 'border-gray-200 text-gray-600 hover:border-blue-400 hover:text-blue-600'
+                      }`}
+                    >
+                      Tất cả
+                    </button>
+                    {categories.map((category) => (
+                      <button
+                        key={category}
+                        type="button"
+                        onClick={() => handleCategoryChange(category)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
+                          categoryParam === category
+                            ? 'bg-blue-500 text-white border-blue-500'
+                            : 'border-gray-200 text-gray-600 hover:border-blue-400 hover:text-blue-600'
+                        }`}
+                      >
+                        {category}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
 
             <PriceRange
               minPrice={minPriceInput}
@@ -297,17 +332,17 @@ function ProductListPage() {
             />
 
             <div className="space-y-3">
-              <h4 className="text-sm font-bold text-gray-900">Danh gia</h4>
+              <h4 className="text-sm font-bold text-gray-900">Đánh giá</h4>
               <select
                 value={ratingParam}
                 onChange={(event) => updateParam('rating', event.target.value)}
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
               >
-                <option value="0">Tat ca</option>
-                <option value="4">Tu 4 sao</option>
-                <option value="3">Tu 3 sao</option>
-                <option value="2">Tu 2 sao</option>
-                <option value="1">Tu 1 sao</option>
+                <option value="0">Tất cả</option>
+                <option value="4">Từ 4 sao</option>
+                <option value="3">Từ 3 sao</option>
+                <option value="2">Từ 2 sao</option>
+                <option value="1">Từ 1 sao</option>
               </select>
             </div>
           </aside>
@@ -315,16 +350,16 @@ function ProductListPage() {
           <section className="space-y-6">
             <div className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-wrap items-center justify-between gap-4">
               <div className="text-sm text-gray-600">
-                {filteredProducts.length} san pham
+                {filteredProducts.length} sản phẩm
               </div>
               <div className="text-sm text-gray-500">
-                Gia tu {minDisplayPrice ? formatPrice(minDisplayPrice) : 'Lien he'}
+                Giá từ {minDisplayPrice ? formatPrice(minDisplayPrice) : 'Liên hệ'}
               </div>
             </div>
 
             <div className="bg-white border border-gray-200 rounded-2xl p-6">
-              {isLoading && <div className="text-center text-gray-500 py-12">Dang tai san pham...</div>}
-              {isError && <div className="text-center text-red-500 py-12">Khong the tai san pham.</div>}
+              {isLoading && <div className="text-center text-gray-500 py-12">Đang tải sản phẩm...</div>}
+              {isError && <div className="text-center text-red-500 py-12">Không thể tải sản phẩm. Vui lòng thử lại.</div>}
               {!isLoading && !isError && (
                 <ProductGrid products={paginatedProducts} onAddToCart={handleAddToCart} />
               )}

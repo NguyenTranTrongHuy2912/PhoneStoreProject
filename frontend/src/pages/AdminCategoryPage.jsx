@@ -1,75 +1,65 @@
 import React, { useMemo, useState } from 'react';
-import { HiOutlinePencilAlt, HiOutlineTag, HiOutlineTrash } from 'react-icons/hi';
+import { HiOutlinePencilAlt, HiOutlineTrash, HiOutlinePlus, HiX } from 'react-icons/hi';
 import { useFetch, useMutate } from '@/hooks/useFetch';
 import { categoryService } from '@/services/categoryService';
 import { useNotificationStore } from '@/store/notificationStore';
 import AdminLayout from '@/components/admin/AdminLayout';
+import ConfirmModal from '@/components/admin/ConfirmModal';
 
 function AdminCategoryPage() {
   const { addNotification } = useNotificationStore();
   const { data, isLoading, isError } = useFetch(['admin-categories'], () => categoryService.getAll());
   const categories = data?.data || [];
 
-  const [name, setName] = useState('');
-  const [slug, setSlug] = useState('');
+  const [name, setName]       = useState('');
+  const [slug, setSlug]       = useState('');
   const [parentId, setParentId] = useState('');
   const [editingId, setEditingId] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const selectableParents = useMemo(() => {
-    return categories.filter((category) => category._id !== editingId);
-  }, [categories, editingId]);
+  const selectableParents = useMemo(
+    () => categories.filter((c) => c._id !== editingId),
+    [categories, editingId]
+  );
 
   const createMutation = useMutate(
     (payload) => categoryService.create(payload),
     [['admin-categories']],
     () => {
-      addNotification({ type: 'success', message: 'Da tao danh muc' });
-      setName('');
-      setSlug('');
-      setParentId('');
+      addNotification({ type: 'success', message: 'Đã tạo danh mục' });
+      setName(''); setSlug(''); setParentId('');
     },
-    () => addNotification({ type: 'error', message: 'Khong the tao danh muc' })
+    () => addNotification({ type: 'error', message: 'Không thể tạo danh mục' })
   );
 
   const updateMutation = useMutate(
     ({ categoryId, payload }) => categoryService.update(categoryId, payload),
     [['admin-categories']],
     () => {
-      addNotification({ type: 'success', message: 'Da cap nhat danh muc' });
-      setEditingId('');
-      setName('');
-      setSlug('');
-      setParentId('');
+      addNotification({ type: 'success', message: 'Đã cập nhật danh mục' });
+      cancelEdit();
     },
-    () => addNotification({ type: 'error', message: 'Khong the cap nhat danh muc' })
+    () => addNotification({ type: 'error', message: 'Không thể cập nhật danh mục' })
   );
 
   const deleteMutation = useMutate(
     (categoryId) => categoryService.delete(categoryId),
     [['admin-categories']],
-    () => addNotification({ type: 'success', message: 'Da xoa danh muc' }),
-    () => addNotification({ type: 'error', message: 'Khong the xoa danh muc' })
+    () => { addNotification({ type: 'success', message: 'Đã xóa danh mục' }); setDeleteTarget(null); },
+    () =>   addNotification({ type: 'error',   message: 'Không thể xóa danh mục' })
   );
 
-  const handleDelete = (category) => {
-    const confirmed = window.confirm(`Xoa danh muc "${category.name}"?`);
-    if (!confirmed) return;
-    deleteMutation.mutate(category._id);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (!name.trim()) {
-      addNotification({ type: 'warning', message: 'Vui long nhap ten danh muc' });
+      addNotification({ type: 'warning', message: 'Vui lòng nhập tên danh mục' });
       return;
     }
-
     const payload = {
       name: name.trim(),
       slug: slug.trim() || undefined,
       parent_id: parentId && parentId !== editingId ? parentId : null,
     };
-
     if (editingId) {
       updateMutation.mutate({ categoryId: editingId, payload });
     } else {
@@ -77,125 +67,165 @@ function AdminCategoryPage() {
     }
   };
 
-  const startEdit = (category) => {
-    setEditingId(category._id);
-    setName(category.name || '');
-    setSlug(category.slug || '');
-    setParentId(category.parent_id?._id || '');
+  const startEdit = (cat) => {
+    setEditingId(cat._id);
+    setName(cat.name || '');
+    setSlug(cat.slug || '');
+    setParentId(cat.parent_id?._id || '');
   };
 
   const cancelEdit = () => {
-    setEditingId('');
-    setName('');
-    setSlug('');
-    setParentId('');
+    setEditingId(''); setName(''); setSlug(''); setParentId('');
   };
 
+  const isBusy = createMutation.isPending || updateMutation.isPending;
+
   return (
-    <AdminLayout title="Quan ly danh muc" subtitle="Tao moi, cap nhat va xoa danh muc">
-      <div className="bg-white border border-gray-200 rounded-2xl p-6">
-          <h2 className="text-base font-bold text-gray-900 mb-4">
-            {editingId ? 'Chinh sua danh muc' : 'Tao danh muc moi'}
-          </h2>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Ten danh muc</label>
+    <AdminLayout
+      title="Quản lý danh mục"
+      subtitle="Tạo mới, cập nhật và xóa danh mục sản phẩm"
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* ── Form ── */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-base font-bold text-gray-900">
+              {editingId ? '✏️ Chỉnh sửa danh mục' : '➕ Tạo danh mục mới'}
+            </h2>
+            {editingId && (
+              <button
+                onClick={cancelEdit}
+                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                title="Hủy chỉnh sửa"
+              >
+                <HiX />
+              </button>
+            )}
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-gray-700">
+                Tên danh mục <span className="text-red-500">*</span>
+              </label>
               <input
                 value={name}
-                onChange={(event) => setName(event.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Dien thoai"
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Điện thoại"
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-shadow"
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Slug (tu dong neu bo trong)</label>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-gray-700">
+                Slug <span className="text-gray-400 font-normal">(tự động nếu bỏ trống)</span>
+              </label>
               <input
                 value={slug}
-                onChange={(event) => setSlug(event.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                onChange={(e) => setSlug(e.target.value)}
                 placeholder="dien-thoai"
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-shadow font-mono"
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Danh muc cha</label>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-gray-700">Danh mục cha</label>
               <select
                 value={parentId}
-                onChange={(event) => setParentId(event.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm"
+                onChange={(e) => setParentId(e.target.value)}
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
               >
-                <option value="">Khong co</option>
-                {selectableParents.map((category) => (
-                  <option key={category._id} value={category._id}>
-                    {category.name}
-                  </option>
+                <option value="">Không có (danh mục gốc)</option>
+                {selectableParents.map((cat) => (
+                  <option key={cat._id} value={cat._id}>{cat.name}</option>
                 ))}
               </select>
             </div>
-            <div className="md:col-span-3">
-              <div className="flex flex-wrap gap-3">
-                <button
-                  type="submit"
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-full"
-                  disabled={createMutation.isPending || updateMutation.isPending}
-                >
-                  {editingId
-                    ? updateMutation.isPending
-                      ? 'Dang cap nhat...'
-                      : 'Cap nhat'
-                    : createMutation.isPending
-                      ? 'Dang tao...'
-                      : 'Tao danh muc'}
-                </button>
-                {editingId && (
-                  <button
-                    type="button"
-                    onClick={cancelEdit}
-                    className="border border-gray-200 px-6 py-3 rounded-full text-sm font-semibold text-gray-600"
-                  >
-                    Huy
-                  </button>
-                )}
-              </div>
-            </div>
+
+            <button
+              type="submit"
+              disabled={isBusy}
+              className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition-colors disabled:opacity-60 shadow-sm"
+            >
+              {!editingId && <HiOutlinePlus />}
+              {isBusy
+                ? 'Đang lưu...'
+                : editingId
+                ? 'Cập nhật danh mục'
+                : 'Tạo danh mục'}
+            </button>
           </form>
         </div>
 
-      {isLoading && <div className="text-gray-500">Dang tai danh muc...</div>}
-      {isError && <div className="text-red-500">Khong the tai danh muc.</div>}
+        {/* ── List ── */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+          <h2 className="text-base font-bold text-gray-900 mb-4">
+            Danh mục hiện có
+            <span className="ml-2 text-sm text-gray-400 font-normal">({categories.length})</span>
+          </h2>
 
-      <div className="bg-white border border-gray-200 rounded-2xl p-6">
-          <h2 className="text-base font-bold text-gray-900 mb-4">Danh muc hien co</h2>
-          <div className="space-y-3 text-sm text-gray-700">
-            {categories.map((category) => (
-              <div key={category._id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {isLoading && (
+            <div className="space-y-2">
+              {[1,2,3].map(i => (
+                <div key={i} className="h-14 bg-gray-100 rounded-xl animate-pulse" />
+              ))}
+            </div>
+          )}
+          {isError && <p className="text-red-500 text-sm">Không thể tải danh mục.</p>}
+
+          <div className="space-y-2">
+            {categories.map((cat) => (
+              <div
+                key={cat._id}
+                className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-colors ${
+                  editingId === cat._id
+                    ? 'border-indigo-300 bg-indigo-50'
+                    : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50'
+                }`}
+              >
                 <div>
-                  <div className="font-semibold text-gray-900">{category.name}</div>
-                  <div className="text-xs text-gray-500">Slug: {category.slug}</div>
+                  <p className="font-semibold text-gray-800 text-sm">{cat.name}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-xs font-mono text-gray-400">{cat.slug}</span>
+                    {cat.parent_id?.name && (
+                      <span className="text-xs text-gray-400">• Cha: {cat.parent_id.name}</span>
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-gray-500">
-                  <span>{category.parent_id?.name ? `Cha: ${category.parent_id.name}` : 'Danh muc goc'}</span>
+                <div className="flex items-center gap-1">
                   <button
-                    type="button"
-                    onClick={() => startEdit(category)}
-                    className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-600"
+                    onClick={() => startEdit(cat)}
+                    className="p-2 rounded-lg text-indigo-500 hover:bg-indigo-100 transition-colors"
+                    title="Chỉnh sửa"
                   >
-                    <HiOutlinePencilAlt /> Sua
+                    <HiOutlinePencilAlt className="text-base" />
                   </button>
                   <button
-                    type="button"
-                    onClick={() => handleDelete(category)}
-                    className="inline-flex items-center gap-1 text-red-500 hover:text-red-600"
+                    onClick={() => setDeleteTarget(cat)}
+                    className="p-2 rounded-lg text-red-400 hover:bg-red-50 transition-colors"
+                    title="Xóa"
                   >
-                    <HiOutlineTrash /> Xoa
+                    <HiOutlineTrash className="text-base" />
                   </button>
                 </div>
               </div>
             ))}
             {categories.length === 0 && !isLoading && !isError && (
-              <div className="text-gray-400">Chua co danh muc.</div>
+              <p className="text-center text-gray-400 py-8 text-sm">Chưa có danh mục nào.</p>
             )}
           </div>
+        </div>
       </div>
+
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={() => deleteMutation.mutate(deleteTarget._id)}
+        title="Xóa danh mục"
+        message={`Bạn có chắc muốn xóa danh mục "${deleteTarget?.name}"?`}
+        confirmLabel="Xóa danh mục"
+        loading={deleteMutation.isPending}
+      />
     </AdminLayout>
   );
 }

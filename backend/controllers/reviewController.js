@@ -4,7 +4,18 @@ const Review = require('../models/Review');
 // @route   POST /api/reviews
 exports.createReview = async (req, res) => {
     try {
-        const { productId, userId, rating, comment } = req.body;
+        // Lấy userId từ JWT token để đảm bảo bảo mật
+        const userId = req.user._id;
+        const { productId, rating, comment } = req.body;
+
+        // Kiểm tra xem user đã đánh giá sản phẩm này chưa (chống duplicate review)
+        const existingReview = await Review.findOne({ productId, userId });
+        if (existingReview) {
+            return res.status(400).json({
+                success: false,
+                message: "Bạn đã đánh giá sản phẩm này rồi. Mỗi sản phẩm chỉ được đánh giá một lần."
+            });
+        }
 
         const review = await Review.create({
             productId,

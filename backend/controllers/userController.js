@@ -102,7 +102,7 @@ exports.updateUserProfile = async (req, res) => {
     try {
         const { fullname, phone, avatar } = req.body;
 
-        if (!req.user || (req.user._id !== req.params.id && req.user.role !== 'admin')) {
+        if (!req.user || (req.user._id.toString() !== req.params.id && req.user.role !== 'admin')) {
             return res.status(403).json({
                 success: false,
                 message: 'Bạn không có quyền cập nhật tài khoản này'
@@ -162,7 +162,7 @@ exports.updateUserRole = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Role không hợp lệ' });
         }
 
-        if (req.user && req.user._id === req.params.id && role !== 'admin') {
+        if (req.user && req.user._id.toString() === req.params.id && role !== 'admin') {
             return res.status(400).json({ success: false, message: 'Không thể tự hạ quyền admin' });
         }
 
@@ -186,7 +186,7 @@ exports.updateUserRole = async (req, res) => {
 // @route   DELETE /api/users/:id
 exports.deleteUser = async (req, res) => {
     try {
-        if (req.user && req.user._id === req.params.id) {
+        if (req.user && req.user._id.toString() === req.params.id) {
             return res.status(400).json({ success: false, message: 'Không thể tự xóa tài khoản' });
         }
 

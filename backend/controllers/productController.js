@@ -1,23 +1,51 @@
 const Product = require('../models/Product');
 
-// @desc    Lấy danh sách tất cả sản phẩm (có hỗ trợ lọc theo thương hiệu nếu cần)
+// @desc    Lấy danh sách tất cả sản phẩm (có hỗ trợ lọc theo brand, category, search)
 // @route   GET /api/products
+// Ví dụ: GET /api/products?brand=Apple&category=iphone&search=pro
 exports.getProducts = async (req, res) => {
     try {
-        const { brand } = req.query;
+        const { brand, category, search, page, limit } = req.query;
         let query = {};
 
-        // Nếu người dùng chọn lọc theo thương hiệu (ví dụ: Apple, Samsung)
+        // Lọc theo thương hiệu
         if (brand) {
-            query.brand = brand;
+            query.brand = { $regex: brand, $options: 'i' };
         }
 
-        const products = await Product.find(query).populate('category', 'name slug');
-        
+        // Lọc theo tên (search keyword)
+        if (search) {
+            query.name = { $regex: search, $options: 'i' };
+        }
+
+        let productQuery = Product.find(query).populate('category', 'name slug');
+
+        // Phân trang (nếu có page & limit)
+        const pageNum = parseInt(page) || 1;
+        const limitNum = parseInt(limit) || 0; // 0 = lấy tất cả
+        if (limitNum > 0) {
+            productQuery = productQuery.skip((pageNum - 1) * limitNum).limit(limitNum);
+        }
+
+        const products = await productQuery;
+
+        // Nếu có filter category, lọc thêm ở server sau khi populate
+        let result = products;
+        if (category) {
+            result = products.filter(product => {
+                if (!product.category) return false;
+                const cat = product.category;
+                const catSlug = typeof cat === 'object' ? (cat.slug || '') : '';
+                const catName = typeof cat === 'object' ? (cat.name || '') : '';
+                return catSlug.toLowerCase().includes(category.toLowerCase()) ||
+                       catName.toLowerCase().includes(category.toLowerCase());
+            });
+        }
+
         res.status(200).json({
             success: true,
-            count: products.length,
-            data: products
+            count: result.length,
+            data: result
         });
     } catch (error) {
         res.status(500).json({
@@ -27,6 +55,7 @@ exports.getProducts = async (req, res) => {
         });
     }
 };
+
 
 // @desc    Lấy chi tiết một sản phẩm theo ID
 // @route   GET /api/products/:id
