@@ -23,14 +23,14 @@ class ErrorBoundary extends React.Component {
       return (
         <div className="min-h-[60vh] flex items-center justify-center">
           <div className="bg-white border border-gray-200 rounded-2xl p-8 text-center space-y-3">
-            <div className="text-2xl font-bold text-gray-900">Da co loi xay ra</div>
-            <p className="text-sm text-gray-500">Vui long tai lai trang hoac quay ve trang chu.</p>
+            <div className="text-2xl font-bold text-gray-900">Đã có lỗi xảy ra</div>
+            <p className="text-sm text-gray-500">Vui lòng tải lại trang hoặc quay về trang chủ.</p>
             <button
               type="button"
               onClick={this.handleReload}
               className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2.5 rounded-full"
             >
-              Ve trang chu
+              Về trang chủ
             </button>
           </div>
         </div>

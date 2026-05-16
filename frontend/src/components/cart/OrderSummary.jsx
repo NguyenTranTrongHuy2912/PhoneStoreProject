@@ -7,24 +7,24 @@ function OrderSummary({ items, subtotal, onCheckout, buttonLabel = 'Thanh toan' 
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
-      <h3 className="text-base font-bold text-gray-900">Tong don hang</h3>
+      <h3 className="text-base font-bold text-gray-900">Tổng đơn hàng</h3>
 
       <div className="space-y-2 text-sm text-gray-600">
         <div className="flex items-center justify-between">
-          <span>Tam tinh</span>
+          <span>Tạm tính</span>
           <span>{formatPrice(subtotal)}</span>
         </div>
         <div className="flex items-center justify-between">
-          <span>Phi giao hang</span>
-          <span>{shippingFee === 0 ? 'Mien phi' : formatPrice(shippingFee)}</span>
+          <span>Phí giao hàng</span>
+          <span>{shippingFee === 0 ? 'Miễn phí' : formatPrice(shippingFee)}</span>
         </div>
         <div className="flex items-center justify-between font-semibold text-gray-900">
-          <span>Tong cong</span>
+          <span>Tổng cộng</span>
           <span>{formatPrice(total)}</span>
         </div>
       </div>
 
-      <div className="text-xs text-gray-500">{items} san pham</div>
+      <div className="text-xs text-gray-500">{items} Sản phẩm</div>
 
       {onCheckout && (
         <button

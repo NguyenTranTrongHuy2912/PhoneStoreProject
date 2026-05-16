@@ -3,14 +3,14 @@ import React from 'react';
 function PriceRange({ minPrice, maxPrice, onChange, onApply }) {
   return (
     <div className="space-y-3">
-      <h4 className="text-sm font-bold text-gray-900">Khoang gia</h4>
+      <h4 className="text-sm font-bold text-gray-900">Giá</h4>
       <div className="flex gap-2">
         <input
           type="number"
           min="0"
           value={minPrice}
           onChange={(event) => onChange?.('min', event.target.value)}
-          placeholder="Tu"
+          placeholder="Từ"
           className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <input
@@ -18,7 +18,7 @@ function PriceRange({ minPrice, maxPrice, onChange, onApply }) {
           min="0"
           value={maxPrice}
           onChange={(event) => onChange?.('max', event.target.value)}
-          placeholder="Den"
+          placeholder="Đến"
           className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>
@@ -27,7 +27,7 @@ function PriceRange({ minPrice, maxPrice, onChange, onApply }) {
         onClick={onApply}
         className="w-full bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-2 rounded-lg transition-colors"
       >
-        Ap dung
+        Áp dụng
       </button>
     </div>
   );
