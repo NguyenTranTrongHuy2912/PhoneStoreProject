@@ -1,6 +1,6 @@
  # 📱 PhoneStore — Website Bán Điện Thoại Full-Stack
 
-> **Đồ án môn học: Phát triển ứng dụng Web — Nhóm 07**
+> **Đồ án môn học: Phát triển Giao diện Ứng dụng**
 >
 > Hệ thống thương mại điện tử bán điện thoại được xây dựng theo kiến trúc Full-stack hiện đại, hỗ trợ Docker hóa toàn diện ở môi trường Local và triển khai tự động (CI/CD) lên các nền tảng Điện toán đám mây.
 
@@ -56,13 +56,21 @@ git clone https://github.com/NguyenTranTrongHuy2912/PhoneStoreProject.git
 cd PhoneStoreProject
 ```
 
-### Bước 2 — Tạo file cấu hình môi trường
+### Bước 2 — Cấu hình biến môi trường (`.env`)
+
+Để bảo mật, tệp cấu hình thực tế không được đẩy lên GitHub. Thầy/Cô vui lòng tạo file `.env` từ file mẫu bằng lệnh:
 
 ```bash
 cp .env.example .env
 ```
 
-> Không cần chỉnh sửa thêm — file `.env.example` đã chứa sẵn thông tin kết nối Database test của nhóm.
+Sau đó, mở file `.env` vừa tạo ra và điền thông tin kết nối Database Test (đã được nhóm chuẩn bị sẵn) vào biến `MONGO_URI`:
+
+- **Chuỗi kết nối Test:**
+  ```
+  mongodb://user_test:Wyb7rAROTS00A4yc@ac-civkkke-shard-00-00.tvzr9ku.mongodb.net:27017,ac-civkkke-shard-00-01.tvzr9ku.mongodb.net:27017,ac-civkkke-shard-00-02.tvzr9ku.mongodb.net:27017/PhoneStoreDB?ssl=true&replicaSet=atlas-c9vlzp-shard-0&authSource=admin&appName=PhoneStoreCluster
+
+  ```
 
 ### Bước 3 — Khởi chạy hệ thống
 
@@ -113,5 +121,19 @@ Dự án đã được triển khai và có thể truy cập trực tuyến:
 - **Backend API (Render):** *https://phonestore-backend-svug.onrender.com*
 
 ---
+
+## 📬 Thông tin liên hệ (Support Contact)
+
+Nếu Thầy/Cô gặp bất kỳ khó khăn hoặc lỗi phát sinh nào trong quá trình khởi chạy Docker (xung đột cổng, kẹt bộ nhớ đệm...), Thầy/Cô vui lòng liên hệ nhóm để được hỗ trợ kỹ thuật ngay lập tức:
+
+* **Nguyễn Trần Trọng Huy (DevOps & Backend):**
+  * Email: `tronghuy2005mn@gmail.com`
+  * GitHub: [@NguyenTranTrongHuy2912](https://github.com/NguyenTranTrongHuy2912)
+
+* **Nguyễn Văn Quốc (Frontend):**
+  * Email: `23645971.quoc@student.iuh.edu.vn`
+  * GitHub: [@Quoc05](https://github.com/Quoc05)
+
+Nhóm luôn sẵn sàng hỗ trợ demo hoặc xử lý sự cố môi trường 24/7 để Thầy có trải nghiệm chấm điểm tốt nhất!
 
 > Cảm ơn Thầy/Cô đã dành thời gian xem xét và đánh giá dự án của Nhóm 07!
