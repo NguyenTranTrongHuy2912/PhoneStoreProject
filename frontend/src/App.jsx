@@ -32,28 +32,9 @@ import ErrorBoundary from './components/common/ErrorBoundary';
 // Route guards
 import ProtectedRoute, { AdminRoute } from './components/auth/ProtectedRoute';
 import ScrollToTop from './components/common/ScrollToTop';
+import Layout from './components/common/Layout';
 
-/**
- * CustomerLayout — wraps all customer-facing pages with Navbar + Footer
- */
-function CustomerLayout() {
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-grow">
-        <ErrorBoundary>
-          <Outlet />
-        </ErrorBoundary>
-      </main>
-      <Footer />
-    </div>
-  );
-}
 
-/**
- * AdminShell — admin pages render their own AdminLayout (dark sidebar)
- * NO Navbar / Footer here — completely separate shell
- */
 function AdminShell() {
   return (
     <ErrorBoundary>
@@ -73,7 +54,7 @@ function App() {
 
       <Routes>
         {/* ── Customer routes ────────────────────────────── */}
-        <Route element={<CustomerLayout />}>
+        <Route element={<Layout />}>
           {/* Public */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
