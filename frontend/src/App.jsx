@@ -31,6 +31,7 @@ import ErrorBoundary from './components/common/ErrorBoundary';
 
 // Route guards
 import ProtectedRoute, { AdminRoute } from './components/auth/ProtectedRoute';
+import ScrollToTop from './components/common/ScrollToTop';
 
 /**
  * CustomerLayout — wraps all customer-facing pages with Navbar + Footer
@@ -66,6 +67,7 @@ function App() {
 
   return (
     <>
+      <ScrollToTop />
       {/* Toast notifications visible across all layouts */}
       <ToastContainer />
 
@@ -135,10 +137,10 @@ function App() {
             </AdminRoute>
           }
         >
-          <Route path="dashboard"  element={<AdminDashboardPage />} />
-          <Route path="products"   element={<AdminProductPage />} />
-          <Route path="orders"     element={<AdminOrderPage />} />
-          <Route path="users"      element={<AdminUsersPage />} />
+          <Route path="dashboard" element={<AdminDashboardPage />} />
+          <Route path="products" element={<AdminProductPage />} />
+          <Route path="orders" element={<AdminOrderPage />} />
+          <Route path="users" element={<AdminUsersPage />} />
           <Route path="categories" element={<AdminCategoryPage />} />
         </Route>
       </Routes>
