@@ -29,7 +29,7 @@ cd PhoneStoreProject
 docker-compose down -v
 
 # 2. Build lại từ đầu, ép Docker không dùng lại các tầng (layer) cũ
-docker-compose build --no-cache frontend
+docker-compose build --no-cache
 
 # 3. Khởi động lại hệ thống
 docker-compose up
