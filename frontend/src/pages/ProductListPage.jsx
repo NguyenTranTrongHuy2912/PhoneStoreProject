@@ -48,36 +48,49 @@ function ProductListPage() {
   const debouncedSearch = useDebounce(searchInput, 500);
   const { addItem } = useCartStore();
   const { addNotification } = useNotificationStore();
+  const urlSearchParam = searchParams.get('search') || '';
 
   const { data, isLoading, isError } = useFetch(
-    ['products', debouncedSearch],
+    ['products', urlSearchParam],
     () => {
-      if (debouncedSearch.trim()) {
-        return productService.search(debouncedSearch.trim());
+      if (urlSearchParam.trim()) {
+        return productService.search(urlSearchParam.trim());
       }
       return productService.getAll();
     },
-    { staleTime: 1000 * 60 * 5 }
+    {
+      staleTime: 1000 * 60 * 5,
+      keepPreviousData: false
+    }
   );
 
   useEffect(() => {
     const next = new URLSearchParams(searchParams);
-    if (debouncedSearch.trim()) {
-      next.set('search', debouncedSearch.trim());
-    } else {
-      next.delete('search');
-    }
-    next.delete('page');
-    if (next.toString() !== searchParams.toString()) {
+    const currentUrlSearch = searchParams.get('search') || '';
+
+    // Chỉ cập nhật URL nếu người dùng thực sự gõ một từ khóa KHÁC với từ khóa đang có trên URL
+    if (debouncedSearch.trim() !== currentUrlSearch) {
+      if (debouncedSearch.trim()) {
+        next.set('search', debouncedSearch.trim());
+        next.delete('brand');   // Xóa hãng để không bị đụng độ query
+        next.delete('category'); // Xóa danh mục
+      } else if (currentUrlSearch && !searchInput) {
+        // Nếu người dùng chủ động xóa trắng ô input nội bộ
+        next.delete('search');
+      }
+      next.delete('page');
       setSearchParams(next);
     }
-  }, [debouncedSearch, searchParams, setSearchParams]);
+  }, [debouncedSearch]);
 
   useEffect(() => {
-    setSearchInput(searchParams.get('search') || '');
+    const currentSearch = searchParams.get('search') || '';
+    if (currentSearch !== searchInput) {
+      setSearchInput(currentSearch);
+    }
     setMinPriceInput(searchParams.get('minPrice') || '');
     setMaxPriceInput(searchParams.get('maxPrice') || '');
-  }, [searchParams.toString()]);
+  }, [searchParams]);
 
   const products = data?.data || [];
 
@@ -173,7 +186,7 @@ function ProductListPage() {
             return a.name.localeCompare(b.name);
         }
       });
-  }, [products, categoryParam, ratingParam, sortParam, minParam, maxParam]);
+  }, [products, brandParam, categoryParam, ratingParam, sortParam, minParam, maxParam]);
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
   const currentPage = Math.min(pageParam, totalPages);
@@ -294,11 +307,10 @@ function ProductListPage() {
                     <button
                       type="button"
                       onClick={() => handleCategoryChange('')}
-                      className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
-                        !categoryParam
-                          ? 'bg-blue-500 text-white border-blue-500'
-                          : 'border-gray-200 text-gray-600 hover:border-blue-400 hover:text-blue-600'
-                      }`}
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${!categoryParam
+                        ? 'bg-blue-500 text-white border-blue-500'
+                        : 'border-gray-200 text-gray-600 hover:border-blue-400 hover:text-blue-600'
+                        }`}
                     >
                       Tất cả
                     </button>
@@ -307,11 +319,10 @@ function ProductListPage() {
                         key={category}
                         type="button"
                         onClick={() => handleCategoryChange(category)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
-                          categoryParam === category
-                            ? 'bg-blue-500 text-white border-blue-500'
-                            : 'border-gray-200 text-gray-600 hover:border-blue-400 hover:text-blue-600'
-                        }`}
+                        className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${categoryParam === category
+                          ? 'bg-blue-500 text-white border-blue-500'
+                          : 'border-gray-200 text-gray-600 hover:border-blue-400 hover:text-blue-600'
+                          }`}
                       >
                         {category}
                       </button>
@@ -381,11 +392,10 @@ function ProductListPage() {
                       key={pageNumber}
                       type="button"
                       onClick={() => handlePageChange(pageNumber)}
-                      className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors ${
-                        pageNumber === currentPage
-                          ? 'bg-blue-500 text-white border-blue-500'
-                          : 'border-gray-200 text-gray-600 hover:border-blue-400 hover:text-blue-600'
-                      }`}
+                      className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors ${pageNumber === currentPage
+                        ? 'bg-blue-500 text-white border-blue-500'
+                        : 'border-gray-200 text-gray-600 hover:border-blue-400 hover:text-blue-600'
+                        }`}
                     >
                       {pageNumber}
                     </button>
