@@ -101,7 +101,7 @@ function LoginPage() {
 
           {/* Quên mật khẩu */}
           <div className="flex justify-end">
-            <Link to="#" className="text-sm font-semibold text-blue-600 hover:text-blue-700">
+            <Link to="/forgot-password" className="text-sm font-semibold text-blue-600 hover:text-blue-700">
               Quên mật khẩu?
             </Link>
           </div>

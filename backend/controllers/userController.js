@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const { generateToken } = require('../middleware/auth');
-
+const sendEmail = require('../utils/sendEmail');
 // @desc    Đăng ký người dùng mới
 // @route   POST /api/users/register
 exports.registerUser = async (req, res) => {
@@ -197,6 +197,75 @@ exports.deleteUser = async (req, res) => {
 
         await user.deleteOne();
         res.status(200).json({ success: true, message: 'Đã xóa người dùng' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+// @desc    Quên mật khẩu (Gửi OTP)
+// @route   POST /api/users/forgot-password
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng với email này' });
+        }
+
+        // Tạo mã OTP 6 số
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        // Lưu OTP và thời gian hết hạn (10 phút)
+        user.resetPasswordOtp = otp;
+        user.resetPasswordOtpExpires = Date.now() + 10 * 60 * 1000;
+        await user.save();
+
+        // Gửi email
+        const message = `Bạn đang yêu cầu khôi phục mật khẩu.\n\nMã xác thực (OTP) của bạn là: ${otp}\n\nMã này sẽ hết hạn sau 10 phút.`;
+        const htmlMessage = `<p>Bạn đang yêu cầu khôi phục mật khẩu.</p>
+                             <p>Mã xác thực (OTP) của bạn là: <strong>${otp}</strong></p>
+                             <p>Mã này sẽ hết hạn sau 10 phút.</p>`;
+
+        await sendEmail({
+            email: user.email,
+            subject: 'Khôi phục mật khẩu (PhoneStore)',
+            message,
+            htmlMessage
+        });
+
+        res.status(200).json({ success: true, message: 'Mã xác thực đã được gửi đến email của bạn.' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+// @desc    Đặt lại mật khẩu với OTP
+// @route   POST /api/users/reset-password
+exports.resetPassword = async (req, res) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+        
+        const user = await User.findOne({
+            email,
+            resetPasswordOtp: otp,
+            resetPasswordOtpExpires: { $gt: Date.now() } // OTP chưa hết hạn
+        });
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Mã xác thực không hợp lệ hoặc đã hết hạn.' });
+        }
+
+        // Mã hóa mật khẩu mới
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(newPassword, salt);
+        
+        // Xóa OTP
+        user.resetPasswordOtp = null;
+        user.resetPasswordOtpExpires = null;
+        await user.save();
+
+        res.status(200).json({ success: true, message: 'Đặt lại mật khẩu thành công. Bạn có thể đăng nhập.' });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
