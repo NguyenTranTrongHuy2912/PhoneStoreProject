@@ -9,6 +9,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const vnpayRoutes = require('./routes/vnpayRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const path = require('path');
 
@@ -42,6 +43,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/vnpay', vnpayRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/chat', chatRoutes);
 
 // 5. 404 Handler (phải đặt trước error handler)
 app.use(notFoundHandler);

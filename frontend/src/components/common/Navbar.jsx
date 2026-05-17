@@ -4,6 +4,7 @@ import { HiOutlineSearch, HiOutlineHeart, HiOutlineShoppingCart, HiOutlineSparkl
 import { useAuthStore } from '@/store/authStore';
 import { useCartStore } from '@/store/cartStore';
 import { useAuth } from '@/hooks/useAuth';
+import AIChatbot from '../chat/AIChatbot';
 
 function Navbar() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ function Navbar() {
   const { items: cartItems } = useCartStore();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const handleSearch = () => {
     const q = searchQuery.trim();
@@ -221,12 +223,18 @@ function Navbar() {
             })}
           </div>
 
-          <div className="flex items-center gap-2 text-gray-700 font-extrabold cursor-pointer hover:text-blue-600 transition-colors py-5">
+          <div 
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            className="flex items-center gap-2 text-gray-700 font-extrabold cursor-pointer hover:text-blue-600 transition-colors py-5"
+          >
             <HiOutlineSparkles className="text-blue-400 text-xl" />
             <span className="text-base uppercase tracking-wide"> AI Gợi ý</span>
           </div>
         </div>
       </div>
+
+      {/* Chatbot Floating UI */}
+      <AIChatbot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </nav>
   );
 }
