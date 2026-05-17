@@ -33,7 +33,6 @@ import ErrorBoundary from './components/common/ErrorBoundary';
 
 // Routes
 import ProtectedRoute, { AdminRoute } from './components/auth/ProtectedRoute';
-import ScrollToTop from './components/common/ScrollToTop';
 import Layout from './components/common/Layout';
 
 /**
