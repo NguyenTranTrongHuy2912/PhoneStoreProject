@@ -7,7 +7,9 @@ const {
     updateUserProfile,
     getAllUsers,
     updateUserRole,
-    deleteUser
+    deleteUser,
+    forgotPassword,
+    resetPassword
 } = require('../controllers/userController');
 
 // Import middleware
@@ -22,6 +24,12 @@ router.post('/register', validateRegister, registerUser);
 // Route Đăng nhập: POST http://localhost:5000/api/users/login
 // Validation: validateLogin (kiểm tra email, password)
 router.post('/login', validateLogin, loginUser);
+
+// Route Quên mật khẩu: POST http://localhost:5000/api/users/forgot-password
+router.post('/forgot-password', forgotPassword);
+
+// Route Đặt lại mật khẩu: POST http://localhost:5000/api/users/reset-password
+router.post('/reset-password', resetPassword);
 
 // Route Profile: GET http://localhost:5000/api/users/profile/:id
 // Require: JWT Token trong header "Authorization: Bearer <token>"

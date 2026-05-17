@@ -47,6 +47,15 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    // OTP để reset mật khẩu
+    resetPasswordOtp: {
+        type: String,
+        default: null
+    },
+    resetPasswordOtpExpires: {
+        type: Date,
+        default: null
     }
 }, {
     timestamps: true // Tự động tạo và cập nhật createdAt, updatedAt

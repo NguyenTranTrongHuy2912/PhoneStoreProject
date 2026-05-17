@@ -8,7 +8,9 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const vnpayRoutes = require('./routes/vnpayRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
+const path = require('path');
 
 const app = express();
 
@@ -29,6 +31,9 @@ app.get('/', (req, res) => {
     res.send('API PhoneStoreProject đang chạy mượt mà...');
 });
 
+// Serve static files from the uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // 4. Routes chính
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
@@ -36,6 +41,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/vnpay', vnpayRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // 5. 404 Handler (phải đặt trước error handler)
 app.use(notFoundHandler);
