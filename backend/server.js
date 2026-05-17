@@ -22,7 +22,7 @@ connectDB();
 // Cho phép URL của Vercel truy cập vào API khi ở production, còn ở development thì cho phép tất cả (để test dễ dàng)
 app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-        ? 'https://phone-store-project-jqkl.vercel.app/'
+        ? 'https://phone-store-project-jqkl.vercel.app'
         : '*'
 }));
 app.use(express.json());
