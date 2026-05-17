@@ -19,17 +19,17 @@ export const useAuth = () => {
       setLoading(true);
       setError(null);
       const response = await authService.login({ email, password });
-      
+
       setToken(response.token);
       setUser(response.data);
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.data));
-      
+
       addNotification({
         type: 'success',
         message: 'Đăng nhập thành công',
       });
-      
+
       // Redirect admin to dashboard, others to home
       navigate(response.data.role === 'admin' ? '/admin/dashboard' : '/');
     } catch (error: any) {
@@ -54,17 +54,17 @@ export const useAuth = () => {
       setLoading(true);
       setError(null);
       const response = await authService.register({ fullname, email, password, phone });
-      
+
       setToken(response.token);
       setUser(response.data);
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.data));
-      
+
       addNotification({
         type: 'success',
         message: 'Đăng ký thành công',
       });
-      
+
       navigate('/');
     } catch (error: any) {
       const message = error.response?.data?.message || 'Đăng ký thất bại';
