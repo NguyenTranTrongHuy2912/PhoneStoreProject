@@ -32,7 +32,7 @@ function Navbar() {
     { name: 'Apple', path: '/products?brand=Apple' },
     { name: 'Samsung', path: '/products?brand=Samsung' },
     { name: 'Xiaomi', path: '/products?brand=Xiaomi' },
-    { name: 'Accessories', path: '/products?category=accessories' },
+    { name: 'Phụ kiện', path: '/products?category=accessories' },
   ];
 
   const handleLogout = () => {

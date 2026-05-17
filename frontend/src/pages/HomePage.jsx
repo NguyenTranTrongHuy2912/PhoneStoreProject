@@ -7,6 +7,8 @@ import { categoryService } from '@/services/categoryService';
 import { useCartStore } from '@/store/cartStore';
 import { useNotificationStore } from '@/store/notificationStore';
 import { formatPrice } from '@/lib/formatters';
+import { FaApple } from 'react-icons/fa';
+import { SiSamsung, SiXiaomi } from 'react-icons/si';
 
 const getDisplayPrice = (product) => {
   if (product?.variants?.length) {
@@ -81,8 +83,8 @@ function HeroSection() {
                 to={`/products?brand=${brand}`}
                 className="group bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 text-center hover:bg-white/20 transition-all hover:-translate-y-1"
               >
-                <div className="text-3xl mb-2">
-                  {brand === 'Apple' ? '🍎' : brand === 'Samsung' ? '📱' : '⚡'}
+                <div className="text-3xl mb-2 flex items-center justify-center">
+                  {brand === 'Apple' ? <FaApple /> : brand === 'Samsung' ? <SiSamsung /> : <SiXiaomi />}
                 </div>
                 <div className="text-white font-bold text-sm">{brand}</div>
               </Link>
@@ -125,9 +127,9 @@ function FeaturesSection() {
 // ==================== BRANDS SECTION ====================
 function BrandsSection() {
   const brands = [
-    { name: 'Apple', emoji: '🍎', color: 'from-gray-800 to-gray-600' },
-    { name: 'Samsung', emoji: '📱', color: 'from-blue-700 to-blue-500' },
-    { name: 'Xiaomi', emoji: '⚡', color: 'from-orange-600 to-orange-400' },
+    { name: 'Apple', emoji: <FaApple />, color: 'from-gray-800 to-gray-600' },
+    { name: 'Samsung', emoji: <SiSamsung />, color: 'from-blue-700 to-blue-500' },
+    { name: 'Xiaomi', emoji: <SiXiaomi />, color: 'from-orange-600 to-orange-400' },
   ];
 
   return (
@@ -185,7 +187,7 @@ function HomeProductCard({ product, onAddToCart }) {
           </h3>
         </Link>
         <div className="flex items-center gap-1">
-          {[1,2,3,4,5].map((star) => (
+          {[1, 2, 3, 4, 5].map((star) => (
             <HiOutlineStar
               key={star}
               className={`text-xs ${star <= Math.round(rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200'}`}
@@ -249,7 +251,7 @@ function PromoBanner() {
             to="/products?brand=Apple"
             className="relative overflow-hidden bg-gradient-to-r from-gray-900 to-gray-700 rounded-2xl p-8 text-white flex items-center gap-6 hover:opacity-90 transition-opacity group"
           >
-            <div className="text-6xl group-hover:scale-110 transition-transform">🍎</div>
+            <div className="text-6xl group-hover:scale-110 transition-transform"><FaApple /></div>
             <div>
               <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Mới nhất 2024</div>
               <div className="text-2xl font-black mb-1">iPhone 16 Series</div>
@@ -263,7 +265,7 @@ function PromoBanner() {
             to="/products?brand=Samsung"
             className="relative overflow-hidden bg-gradient-to-r from-blue-900 to-blue-700 rounded-2xl p-8 text-white flex items-center gap-6 hover:opacity-90 transition-opacity group"
           >
-            <div className="text-6xl group-hover:scale-110 transition-transform">📱</div>
+            <div className="text-6xl group-hover:scale-110 transition-transform"><SiSamsung /></div>
             <div>
               <div className="text-xs font-bold text-blue-300 uppercase tracking-wider mb-1">Galaxy AI</div>
               <div className="text-2xl font-black mb-1">Samsung S24 Ultra</div>
@@ -365,7 +367,11 @@ function HomePage() {
             {appleProducts.length > 0 && (
               <section>
                 <FeaturedProducts
-                  title="🍎 Apple — iPhone & iPad"
+                  title={
+                    <span className="flex items-center gap-2">
+                      <FaApple className="text-4xl" /> Apple — iPhone & iPad
+                    </span>
+                  }
                   products={appleProducts}
                   onAddToCart={handleAddToCart}
                 />
@@ -376,7 +382,11 @@ function HomePage() {
             {samsungProducts.length > 0 && (
               <section>
                 <FeaturedProducts
-                  title="📱 Samsung Galaxy"
+                  title={
+                    <span className="flex items-center gap-2">
+                      <SiSamsung className="text-4xl" /> Samsung Galaxy
+                    </span>
+                  }
                   products={samsungProducts}
                   onAddToCart={handleAddToCart}
                 />
