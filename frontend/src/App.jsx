@@ -33,6 +33,8 @@ import ErrorBoundary from './components/common/ErrorBoundary';
 
 // Routes
 import ProtectedRoute, { AdminRoute } from './components/auth/ProtectedRoute';
+import ScrollToTop from './components/common/ScrollToTop';
+import Layout from './components/common/Layout';
 
 /**
  * Loading Fallback for Suspense
@@ -48,29 +50,6 @@ function PageLoader() {
   );
 }
 
-/**
- * CustomerLayout — wraps all customer-facing pages with Navbar + Footer
- */
-function CustomerLayout() {
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-grow">
-        <ErrorBoundary>
-          <Suspense fallback={<PageLoader />}>
-            <Outlet />
-          </Suspense>
-        </ErrorBoundary>
-      </main>
-      <Footer />
-    </div>
-  );
-}
-
-/**
- * AdminShell — admin pages render their own AdminLayout (dark sidebar)
- * NO Navbar / Footer here — completely separate shell
- */
 function AdminShell() {
   return (
     <ErrorBoundary>
@@ -92,7 +71,7 @@ function App() {
 
       <Routes>
         {/* ── Customer routes ────────────────────────────── */}
-        <Route element={<CustomerLayout />}>
+        <Route element={<Layout />}>
           {/* Public */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -157,10 +136,10 @@ function App() {
             </AdminRoute>
           }
         >
-          <Route path="dashboard"  element={<AdminDashboardPage />} />
-          <Route path="products"   element={<AdminProductPage />} />
-          <Route path="orders"     element={<AdminOrderPage />} />
-          <Route path="users"      element={<AdminUsersPage />} />
+          <Route path="dashboard" element={<AdminDashboardPage />} />
+          <Route path="products" element={<AdminProductPage />} />
+          <Route path="orders" element={<AdminOrderPage />} />
+          <Route path="users" element={<AdminUsersPage />} />
           <Route path="categories" element={<AdminCategoryPage />} />
         </Route>
       </Routes>

@@ -12,13 +12,13 @@ function CartPage() {
     return (
       <div className="bg-gray-50 min-h-screen">
         <div className="max-w-[1200px] mx-auto px-10 py-16 text-center space-y-6">
-          <div className="text-2xl font-bold text-gray-800">Gio hang dang trong</div>
-          <p className="text-gray-500">Hay them san pham yeu thich cua ban.</p>
+          <div className="text-2xl font-bold text-gray-800">Giỏ hàng đang trống</div>
+          <p className="text-gray-500">Hãy thêm một vài sản phẩm vào giỏ hàng của bạn.</p>
           <Link
             to="/products"
             className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-full"
           >
-            Mua sam ngay
+            Mua sắm ngay
           </Link>
         </div>
       </div>
@@ -30,8 +30,8 @@ function CartPage() {
       <div className="max-w-[1200px] mx-auto px-10 py-10 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Gio hang cua ban</h1>
-            <span className="text-sm text-gray-500">{items.length} san pham</span>
+            <h1 className="text-2xl font-bold text-gray-900">Giỏ hàng của bạn</h1>
+            <span className="text-sm text-gray-500">{items.length} sản phẩm</span>
           </div>
 
           {items.map((item) => (
@@ -49,7 +49,7 @@ function CartPage() {
           items={getTotalItems()}
           subtotal={getTotalPrice()}
           onCheckout={() => navigate('/checkout')}
-          buttonLabel="Tien hanh thanh toan"
+          buttonLabel="Tiến hành thanh toán"
         />
       </div>
     </div>

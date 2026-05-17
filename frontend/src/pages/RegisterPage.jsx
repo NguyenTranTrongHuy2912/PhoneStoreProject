@@ -59,15 +59,15 @@ function RegisterPage() {
     <div className="min-h-[90vh] flex items-center justify-center py-12">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold text-gray-900">Dang ky tai khoan</h2>
+          <h2 className="text-3xl font-bold text-gray-900">Đăng ký tài khoản</h2>
           <p className="text-gray-500 text-sm font-medium">
-            Tao tai khoan de bat dau mua sam ngay hom nay
+            Tạo tài khoản để bắt đầu mua sắm ngay hôm nay
           </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">Ten day du</label>
+            <label className="text-sm font-semibold text-gray-700">Tên đầy đủ</label>
             <div className="relative group">
               <HiOutlineUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-blue-500 transition-colors" />
               <input
@@ -99,7 +99,7 @@ function RegisterPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">So dien thoai</label>
+            <label className="text-sm font-semibold text-gray-700">Số điện thoại</label>
             <div className="relative group">
               <HiOutlinePhone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-blue-500 transition-colors" />
               <input
@@ -115,7 +115,7 @@ function RegisterPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">Mat khau</label>
+            <label className="text-sm font-semibold text-gray-700">Mật khẩu</label>
             <div className="relative group">
               <HiOutlineLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-blue-500 transition-colors" />
               <input
@@ -138,7 +138,7 @@ function RegisterPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">Xac nhan mat khau</label>
+            <label className="text-sm font-semibold text-gray-700">Xác nhận mật khẩu</label>
             <div className="relative group">
               <HiOutlineLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-blue-500 transition-colors" />
               <input
@@ -169,15 +169,15 @@ function RegisterPage() {
               className="w-5 h-5 mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             <label htmlFor="terms" className="text-xs text-gray-600 leading-relaxed">
-              Toi dong y voi{' '}
-              <Link to="#" className="underline text-blue-600 hover:text-blue-700">
-                Dieu khoan dich vu
+              Tôi đồng ý với{' '}
+              <Link to="dieu-khoan-dich-vu" className="underline text-blue-600 hover:text-blue-700">
+                Điều khoản dịch vụ
               </Link>{' '}
-              va{' '}
-              <Link to="#" className="underline text-blue-600 hover:text-blue-700">
-                Chinh sach bao mat
+              và{' '}
+              <Link to="chinh-sach-bao-mat" className="underline text-blue-600 hover:text-blue-700">
+                Chính sách bảo mật
               </Link>{' '}
-              cua PhoneStore
+              của PhoneStore
             </label>
           </div>
 
@@ -186,7 +186,7 @@ function RegisterPage() {
             disabled={isLoading}
             className="w-full bg-[#2d6289] hover:bg-[#244e6d] disabled:bg-gray-400 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-900/10 transition-all active:scale-[0.98]"
           >
-            {isLoading ? 'Dang dang ky...' : 'Dang ky'}
+            {isLoading ? 'Đang đăng ký...' : 'Đăng ký'}
           </button>
         </form>
 
@@ -195,7 +195,7 @@ function RegisterPage() {
             <div className="w-full border-t border-gray-100"></div>
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-4 text-gray-400 font-bold tracking-widest">Hoac tiep tuc voi</span>
+            <span className="bg-white px-4 text-gray-400 font-bold tracking-widest">Hoặc tiếp tục với</span>
           </div>
         </div>
 
@@ -210,14 +210,14 @@ function RegisterPage() {
             type="button"
             className="flex items-center justify-center gap-3 px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-semibold text-gray-700"
           >
-            <FaPhoneAlt size={20} className="text-black" /> So dien thoai
+            <FaPhoneAlt size={20} className="text-black" /> Số điện thoại
           </button>
         </div>
 
         <p className="text-center text-sm text-gray-500 font-medium">
-          Da co tai khoan?{' '}
+          Đã có tài khoản?{' '}
           <Link to="/login" className="text-[#2d6289] font-bold hover:underline">
-            Dang nhap ngay
+            Đăng nhập ngay
           </Link>
         </p>
       </div>
