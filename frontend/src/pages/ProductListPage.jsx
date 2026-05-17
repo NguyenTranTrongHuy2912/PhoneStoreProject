@@ -9,6 +9,7 @@ import { productService } from '@/services/productService';
 import { useCartStore } from '@/store/cartStore';
 import { useNotificationStore } from '@/store/notificationStore';
 import { formatPrice } from '@/lib/formatters';
+import LoadingSkeleton from '@/components/common/LoadingSkeleton';
 
 const PAGE_SIZE = 12;
 
@@ -369,7 +370,7 @@ function ProductListPage() {
             </div>
 
             <div className="bg-white border border-gray-200 rounded-2xl p-6">
-              {isLoading && <div className="text-center text-gray-500 py-12">Đang tải sản phẩm...</div>}
+              {isLoading && <LoadingSkeleton items={PAGE_SIZE} />}
               {isError && <div className="text-center text-red-500 py-12">Không thể tải sản phẩm. Vui lòng thử lại.</div>}
               {!isLoading && !isError && (
                 <ProductGrid products={paginatedProducts} onAddToCart={handleAddToCart} />
