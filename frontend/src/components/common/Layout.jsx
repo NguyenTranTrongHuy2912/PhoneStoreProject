@@ -6,9 +6,9 @@ import ErrorBoundary from './ErrorBoundary';
 
 function Layout() {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-gray-50 overflow-x-hidden">
       <Navbar />
-      <main className="flex-grow container">
+      <main className="flex-grow container mx-auto">
         <ErrorBoundary>
           <Outlet />
         </ErrorBoundary>
