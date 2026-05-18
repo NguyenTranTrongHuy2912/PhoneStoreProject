@@ -134,7 +134,22 @@ function ProductListPage() {
         // Filter theo danh mục
         if (categoryParam) {
           const productCategory = getCategoryValue(product.category);
-          if (!productCategory.includes(categoryParam.toLowerCase())) {
+          const searchTerm = categoryParam.toLowerCase();
+          
+          const normalizeForSearch = (str) => {
+            if (!str) return '';
+            return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+          };
+          
+          const normalizedCategory = normalizeForSearch(productCategory);
+          const normalizedSearch = normalizeForSearch(searchTerm);
+
+          if (searchTerm === 'accessories') {
+            if (!normalizedCategory.includes('accessories') && 
+                !normalizedCategory.includes('phukien')) {
+              return false;
+            }
+          } else if (!normalizedCategory.includes(normalizedSearch)) {
             return false;
           }
         }
