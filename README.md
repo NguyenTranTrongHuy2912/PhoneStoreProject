@@ -2,7 +2,7 @@
 
 Website thương mại điện tử bán điện thoại, xây dựng theo kiến trúc full-stack (React + Node.js + MongoDB), đóng gói bằng Docker và triển khai lên cloud.
 
-**Demo trực tuyến:** [Phone Store](phone-store-project-jqkl.vercel.app)
+**Demo trực tuyến:** [phone-store-project-jqkl.vercel.app](phone-store-project-jqkl.vercel.app)
 
 <!-- Thêm 2-3 ảnh chụp màn hình hoặc 1 GIF demo ở đây, ví dụ:
 ![Trang chủ](docs/home.png)
