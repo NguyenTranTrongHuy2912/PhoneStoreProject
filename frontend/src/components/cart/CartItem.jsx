@@ -1,16 +1,21 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { HiOutlineMinusSm, HiOutlinePlusSm, HiOutlineTrash } from 'react-icons/hi';
 import { formatPrice } from '@/lib/formatters';
 
 function CartItem({ item, onIncrease, onDecrease, onRemove }) {
 	const product = item.product || {};
+	const productId = product?._id || item.productId;
 	const imageSrc = product?.images?.[0] || '/logo-grid.svg';
 	const name = product?.name || item.name || 'San pham';
 	const brand = product?.brand || '';
 
 	return (
 		<div className="flex flex-col md:flex-row gap-6 border border-gray-200 rounded-2xl p-5 bg-white">
-			<div className="w-full md:w-32 h-32 bg-gray-50 rounded-xl flex items-center justify-center">
+			<Link
+				to={`/products/${productId}`}
+				className="w-full md:w-32 h-32 bg-gray-50 rounded-xl flex items-center justify-center"
+			>
 				<img
 					src={imageSrc}
 					alt={name}
@@ -19,12 +24,14 @@ function CartItem({ item, onIncrease, onDecrease, onRemove }) {
 						event.currentTarget.src = '/logo-grid.svg';
 					}}
 				/>
-			</div>
+			</Link>
 
 			<div className="flex-1 space-y-2">
 				<div className="flex items-start justify-between gap-4">
 					<div>
-						<h3 className="text-base font-bold text-gray-900">{name}</h3>
+						<Link to={`/products/${productId}`} className="text-base font-bold text-gray-900 hover:text-blue-600 transition-colors">
+							<h3>{name}</h3>
+						</Link>
 						{brand && <p className="text-xs text-gray-500 uppercase">{brand}</p>}
 					</div>
 					<button
